@@ -1,0 +1,6 @@
+framework module Pods_Jmagine {
+  umbrella header "Pods-Jmagine-umbrella.h"
+
+  export *
+  module * { export * }
+}
