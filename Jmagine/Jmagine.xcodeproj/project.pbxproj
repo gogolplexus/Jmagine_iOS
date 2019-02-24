@@ -8,18 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		1412D3A61E72DD66F7D85031 /* Pods_Jmagine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AECF70B12E8E6C9B2B6DAF75 /* Pods_Jmagine.framework */; };
-		2943E9282222D251008564FE /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2943E9272222D251008564FE /* NavigationController.swift */; };
-		2943E92A2222D87E008564FE /* LeftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2943E9292222D87E008564FE /* LeftViewController.swift */; };
-		2943E92C2222D8C6008564FE /* LeftViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2943E92B2222D8C6008564FE /* LeftViewCell.swift */; };
+		2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938DADF222336AE00F00B56 /* NavmenuController.swift */; };
 		29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B09B762222C7B7005F77C5 /* AppDelegate.swift */; };
 		29B09B792222C7B7005F77C5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B09B782222C7B7005F77C5 /* ViewController.swift */; };
 		29B09B7E2222C7B8005F77C5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29B09B7D2222C7B8005F77C5 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2943E9272222D251008564FE /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
-		2943E9292222D87E008564FE /* LeftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftViewController.swift; sourceTree = "<group>"; };
-		2943E92B2222D8C6008564FE /* LeftViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftViewCell.swift; sourceTree = "<group>"; };
+		2938DADF222336AE00F00B56 /* NavmenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavmenuController.swift; sourceTree = "<group>"; };
 		29B09B732222C7B7005F77C5 /* Jmagine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Jmagine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29B09B762222C7B7005F77C5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		29B09B782222C7B7005F77C5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -53,9 +49,7 @@
 		2943E9262222D223008564FE /* navigation */ = {
 			isa = PBXGroup;
 			children = (
-				2943E9272222D251008564FE /* NavigationController.swift */,
-				2943E9292222D87E008564FE /* LeftViewController.swift */,
-				2943E92B2222D8C6008564FE /* LeftViewCell.swift */,
+				2938DADF222336AE00F00B56 /* NavmenuController.swift */,
 			);
 			path = navigation;
 			sourceTree = "<group>";
@@ -175,13 +169,13 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Jmagine/Pods-Jmagine-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/LGSideMenuController/LGSideMenuController.framework",
+				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LGSideMenuController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -217,11 +211,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */,
 				29B09B792222C7B7005F77C5 /* ViewController.swift in Sources */,
-				2943E92A2222D87E008564FE /* LeftViewController.swift in Sources */,
-				2943E9282222D251008564FE /* NavigationController.swift in Sources */,
 				29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */,
-				2943E92C2222D8C6008564FE /* LeftViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

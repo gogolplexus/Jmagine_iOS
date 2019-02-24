@@ -1,16 +1,16 @@
 PODS:
-  - LGSideMenuController (2.1.1)
+  - SideMenu (5.0.3)
 
 DEPENDENCIES:
-  - LGSideMenuController
+  - SideMenu
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - LGSideMenuController
+    - SideMenu
 
 SPEC CHECKSUMS:
-  LGSideMenuController: ae40c80983ab8b8801c7cef0a6804d43aaa72d45
+  SideMenu: 1dcaabce84538c53325c287f7fe62999379a641c
 
-PODFILE CHECKSUM: b0df49205299969c451fe90c6ca1abc8d191334f
+PODFILE CHECKSUM: a897fa49174d29efca6d9e5386bc193d5ac1bd1d
 
 COCOAPODS: 1.6.1
