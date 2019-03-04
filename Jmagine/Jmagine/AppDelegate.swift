@@ -12,15 +12,31 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var navigationController: UINavigationController?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
         // Override point for customization after application launch.
+        // Sets background to a blank/empty image
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+        // Sets shadow (line below the bar) to a blank image
+        UINavigationBar.appearance().shadowImage = UIImage()
+        // Sets the translucent background color
+        UINavigationBar.appearance().backgroundColor = .clear
+        // Set translucent. (Default value is already true, so this can be removed if desired.)
+        UINavigationBar.appearance().isTranslucent = true
+        
+        // Override point for customization after application launch.
+        
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.backgroundColor = UIColor.black
-        window?.makeKeyAndVisible()
-        // Setup our initialViewController
-        window?.rootViewController = ViewController()
+        
+        if let window = window {
+            let mainVC = HomeController()
+            navigationController = UINavigationController(rootViewController: mainVC)
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+        }
+        
         return true
     }
 
