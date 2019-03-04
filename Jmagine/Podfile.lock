@@ -1,16 +1,40 @@
 PODS:
+  - Alamofire (4.8.1)
   - SideMenu (5.0.3)
+  - SwiftyXMLParser (4.3.0)
+  - XMLParsing (0.0.3)
 
 DEPENDENCIES:
+  - Alamofire (= 4.8.1)
   - SideMenu
+  - SwiftyXMLParser (from `https://github.com/yahoojapan/SwiftyXMLParser.git`)
+  - XMLParsing (from `https://github.com/ShawnMoore/XMLParsing.git`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Alamofire
     - SideMenu
 
-SPEC CHECKSUMS:
-  SideMenu: 1dcaabce84538c53325c287f7fe62999379a641c
+EXTERNAL SOURCES:
+  SwiftyXMLParser:
+    :git: https://github.com/yahoojapan/SwiftyXMLParser.git
+  XMLParsing:
+    :git: https://github.com/ShawnMoore/XMLParsing.git
 
-PODFILE CHECKSUM: a897fa49174d29efca6d9e5386bc193d5ac1bd1d
+CHECKOUT OPTIONS:
+  SwiftyXMLParser:
+    :commit: ddfbd6383cbd5c44d207430268bd4e0003766bcd
+    :git: https://github.com/yahoojapan/SwiftyXMLParser.git
+  XMLParsing:
+    :commit: 594272e4df40798c53ae1735ee65f3f387291670
+    :git: https://github.com/ShawnMoore/XMLParsing.git
+
+SPEC CHECKSUMS:
+  Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
+  SideMenu: 1dcaabce84538c53325c287f7fe62999379a641c
+  SwiftyXMLParser: b2e0b0dd0e0fb1ac39869dd4a0c6181847af2945
+  XMLParsing: 085edb6fa22c71d6b53a79299f990a91e7414d19
+
+PODFILE CHECKSUM: 716fca0c5dd1b4e0211a3e2f86f28050b3eedb83
 
 COCOAPODS: 1.6.1
