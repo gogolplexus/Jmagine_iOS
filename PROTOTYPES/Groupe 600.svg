@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="375" height="80" viewBox="0 0 375 80">
+  <g id="Groupe_600" data-name="Groupe 600" transform="translate(0 -327)">
+    <g id="Rectangle_322" data-name="Rectangle 322" transform="translate(80 327)" fill="none" stroke="#efeff4" stroke-width="1">
+      <rect width="295" height="80" stroke="none"/>
+      <rect x="0.5" y="0.5" width="294" height="79" fill="none"/>
+    </g>
+    <text id="Title_3" data-name="Title 3" transform="translate(107.5 376)" font-size="20" font-family="Helvetica" letter-spacing="0em"><tspan x="0" y="0">Nom du parcours 4</tspan></text>
+    <rect id="Rectangle_323" data-name="Rectangle 323" width="25" height="25" rx="7" transform="translate(315 357)" fill="#e5e5ea"/>
+    <path id="ic_keyboard_arrow_right_24px" d="M8.59,20.041l6.181-6.194L8.59,7.653l1.9-1.9,8.1,8.1-8.1,8.1Z" transform="translate(314.41 355.25)" fill="#fff"/>
+    <g id="Rectangle_1500" data-name="Rectangle 1500" transform="translate(0 327)" fill="#e5e5ea" stroke="#efeff4" stroke-width="1">
+      <rect width="80" height="80" stroke="none"/>
+      <rect x="0.5" y="0.5" width="79" height="79" fill="none"/>
+    </g>
+    <text id="Title_3-2" data-name="Title 3" transform="translate(33.5 375)" font-size="22" font-family="Helvetica" letter-spacing="0em"><tspan x="0" y="0">4</tspan></text>
+  </g>
+</svg>
