@@ -11,7 +11,7 @@ import SideMenu
 
 class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    private let myArray: NSArray = ["Parcours","Thèmes","Favoris","Tutoriel"]
+    private let myArray: NSArray = ["Parcours","Thèmes","Favoris","Tutoriel","Test"]
     private var myTableView: UITableView!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -19,7 +19,7 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     let logoImageView: UIImageView = {
-        let imageView = UIImageView(image:#imageLiteral(resourceName: "menu_bg.jpg"))
+        let imageView = UIImageView(image:#imageLiteral(resourceName: "header.jpg"))
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -53,6 +53,13 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
             viewController.modalPresentationCapturesStatusBarAppearance = true
             navControl?.pushViewController(viewController, animated: true)
             break
+        case "Test":
+            let navControl = self.navigationController
+            let viewController = ParcoursController()
+            viewController.currParcours = 4
+            viewController.modalPresentationCapturesStatusBarAppearance = true
+            navControl?.pushViewController(viewController, animated: true)
+            break
         default:
             let navControl = self.navigationController
             let viewController = HomeController()
@@ -69,9 +76,26 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         return myArray.count
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    {
+        return 75.0
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = UIColor.clear
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath as IndexPath)
+        
+        cell.textLabel!.textColor = .white
+        cell.textLabel!.font = UIFont.systemFont(ofSize: 22)
         cell.textLabel!.text = "\(myArray[indexPath.row])"
+        
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .black
+        cell.selectedBackgroundView = backgroundView
+        
         return cell
     }
     
@@ -79,8 +103,7 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
         // Do any additional setup after loading the view, typically from a nib.
-        view.backgroundColor = UIColor.white
-        customizeMenu()
+        view.backgroundColor = UIColor.JmagineColors.Dark.MainDark
         initNavOptions()
         initHeader()
         
@@ -89,10 +112,12 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         let displayWidth: CGFloat = self.view.frame.width
         let displayHeight: CGFloat = self.view.frame.height
         
-        myTableView = UITableView(frame: CGRect(x: 0, y: barHeight + 250, width: displayWidth, height: displayHeight - barHeight - 250))
+        myTableView = UITableView(frame: CGRect(x: 0, y: 250, width: displayWidth, height: displayHeight - barHeight - 250))
         myTableView.register(UITableViewCell.self, forCellReuseIdentifier: "MyCell")
         myTableView.dataSource = self
         myTableView.delegate = self
+        
+        customizeMenu()
         
         self.view.addSubview(myTableView)
     }
@@ -100,6 +125,9 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
     func customizeMenu(){
         SideMenuManager.default.menuWidth = self.view.frame.width
         SideMenuManager.default.menuDismissOnPush = true
+        
+        myTableView.backgroundColor = UIColor.JmagineColors.Dark.MainDark
+        myTableView.separatorStyle = .none
     }
     
     @objc func closeMenu(sender: UIButton!) {
@@ -122,6 +150,34 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func initHeader() {
+        let mainTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        mainTitle.font = UIFont.systemFont(ofSize: 28)
+        mainTitle.textColor = UIColor.JmagineColors.Blue.MainBlue
+        mainTitle.layer.shadowColor = UIColor.black.cgColor
+        mainTitle.layer.shadowRadius = 3.0
+        mainTitle.layer.shadowOpacity = 1.0
+        mainTitle.layer.shadowOffset = CGSize(width: 0, height: 0)
+        mainTitle.layer.masksToBounds = false
+        mainTitle.text = "Jmagine"
+        mainTitle.sizeToFit()
+        
+        let subTitle = UILabel(frame: CGRect(x: 0, y: 30, width: 0, height: 0))
+        subTitle.font = UIFont.systemFont(ofSize: 16)
+        subTitle.textColor = UIColor.JmagineColors.Gray.MainGray
+        subTitle.layer.shadowColor = UIColor.black.cgColor
+        subTitle.layer.shadowRadius = 3.0
+        subTitle.layer.shadowOpacity = 1.0
+        subTitle.layer.shadowOffset = CGSize(width: 0, height: 0)
+        mainTitle.layer.masksToBounds = false
+        subTitle.text = "Les chemins de la connaissance"
+        subTitle.sizeToFit()
+        
+        let titleView = UIView(frame: CGRect(x:10, y:150, width:max(mainTitle.frame.size.width, subTitle.frame.size.width), height:30))
+        titleView.addSubview(mainTitle)
+        titleView.addSubview(subTitle)
+        
+        self.logoImageView.addSubview(titleView)
+        
         view.addSubview(logoImageView)
         let widthConstraint = NSLayoutConstraint(item: logoImageView, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: self.view.frame.width)
         

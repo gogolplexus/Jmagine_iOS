@@ -12,12 +12,14 @@
 		29205968222AEBC900B6ED94 /* ThemeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205967222AEBC900B6ED94 /* ThemeController.swift */; };
 		2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205969222AEBF000B6ED94 /* TutoController.swift */; };
 		2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938DADF222336AE00F00B56 /* NavmenuController.swift */; };
+		297B78DE2235441B0008868D /* ParcoursController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297B78DD2235441B0008868D /* ParcoursController.swift */; };
 		29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD41F4222C0F21000B50BA /* ApiUtils.swift */; };
-		29AD41F7222C171D000B50BA /* ParcoursModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD41F6222C171D000B50BA /* ParcoursModel.swift */; };
 		29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B09B762222C7B7005F77C5 /* AppDelegate.swift */; };
 		29B09B792222C7B7005F77C5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B09B782222C7B7005F77C5 /* ViewController.swift */; };
 		29B09B7E2222C7B8005F77C5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29B09B7D2222C7B8005F77C5 /* Assets.xcassets */; };
 		29B3A8982225CF6300411A20 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B3A8972225CF6300411A20 /* HomeController.swift */; };
+		29BA8E73223995FA007F556E /* ParcoursState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BA8E72223995FA007F556E /* ParcoursState.swift */; };
+		29BA8E752239A751007F556E /* CustomColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BA8E742239A751007F556E /* CustomColors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,14 +27,16 @@
 		29205967222AEBC900B6ED94 /* ThemeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeController.swift; sourceTree = "<group>"; };
 		29205969222AEBF000B6ED94 /* TutoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutoController.swift; sourceTree = "<group>"; };
 		2938DADF222336AE00F00B56 /* NavmenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavmenuController.swift; sourceTree = "<group>"; };
+		297B78DD2235441B0008868D /* ParcoursController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursController.swift; sourceTree = "<group>"; };
 		29AD41F4222C0F21000B50BA /* ApiUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiUtils.swift; sourceTree = "<group>"; };
-		29AD41F6222C171D000B50BA /* ParcoursModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursModel.swift; sourceTree = "<group>"; };
 		29B09B732222C7B7005F77C5 /* Jmagine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Jmagine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29B09B762222C7B7005F77C5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		29B09B782222C7B7005F77C5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		29B09B7D2222C7B8005F77C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		29B09B822222C7B8005F77C5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29B3A8972225CF6300411A20 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
+		29BA8E72223995FA007F556E /* ParcoursState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursState.swift; sourceTree = "<group>"; };
+		29BA8E742239A751007F556E /* CustomColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColors.swift; sourceTree = "<group>"; };
 		2DC947B368D248CCC753D347 /* Pods-Jmagine.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Jmagine.debug.xcconfig"; path = "Target Support Files/Pods-Jmagine/Pods-Jmagine.debug.xcconfig"; sourceTree = "<group>"; };
 		AECF70B12E8E6C9B2B6DAF75 /* Pods_Jmagine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Jmagine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9F2407B65F1372F3D571623 /* Pods-Jmagine.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Jmagine.release.xcconfig"; path = "Target Support Files/Pods-Jmagine/Pods-Jmagine.release.xcconfig"; sourceTree = "<group>"; };
@@ -66,18 +70,12 @@
 			path = navigation;
 			sourceTree = "<group>";
 		};
-		29AD41F2222C0EF8000B50BA /* models */ = {
-			isa = PBXGroup;
-			children = (
-				29AD41F6222C171D000B50BA /* ParcoursModel.swift */,
-			);
-			path = models;
-			sourceTree = "<group>";
-		};
 		29AD41F3222C0F07000B50BA /* utils */ = {
 			isa = PBXGroup;
 			children = (
 				29AD41F4222C0F21000B50BA /* ApiUtils.swift */,
+				29BA8E72223995FA007F556E /* ParcoursState.swift */,
+				29BA8E742239A751007F556E /* CustomColors.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -104,7 +102,6 @@
 			isa = PBXGroup;
 			children = (
 				29AD41F3222C0F07000B50BA /* utils */,
-				29AD41F2222C0EF8000B50BA /* models */,
 				29B3A8962225CF3B00411A20 /* controllers */,
 				2943E9262222D223008564FE /* navigation */,
 				29B09B762222C7B7005F77C5 /* AppDelegate.swift */,
@@ -122,6 +119,7 @@
 				29205965222ADD5600B6ED94 /* FavorisController.swift */,
 				29205967222AEBC900B6ED94 /* ThemeController.swift */,
 				29205969222AEBF000B6ED94 /* TutoController.swift */,
+				297B78DD2235441B0008868D /* ParcoursController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -259,15 +257,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29BA8E73223995FA007F556E /* ParcoursState.swift in Sources */,
 				29B3A8982225CF6300411A20 /* HomeController.swift in Sources */,
-				29AD41F7222C171D000B50BA /* ParcoursModel.swift in Sources */,
 				29205966222ADD5600B6ED94 /* FavorisController.swift in Sources */,
 				2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */,
 				29B09B792222C7B7005F77C5 /* ViewController.swift in Sources */,
+				29BA8E752239A751007F556E /* CustomColors.swift in Sources */,
 				29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */,
 				29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */,
 				2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */,
 				29205968222AEBC900B6ED94 /* ThemeController.swift in Sources */,
+				297B78DE2235441B0008868D /* ParcoursController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

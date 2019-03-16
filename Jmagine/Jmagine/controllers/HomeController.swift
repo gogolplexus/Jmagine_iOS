@@ -8,6 +8,9 @@
 
 import UIKit
 import SideMenu
+import Alamofire
+import SwiftyXMLParser
+import XMLParsing
 
 class HomeController: UIViewController, UINavigationControllerDelegate {
     
@@ -30,8 +33,6 @@ class HomeController: UIViewController, UINavigationControllerDelegate {
         
         // (Optional) Prevent status bar area from turning black when menu appears:
         SideMenuManager.default.menuFadeStatusBar = false
-        let test = ApiUtils()
-        test.getData()
     }
     
     @objc func openMenu(sender: UIButton!) {

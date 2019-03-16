@@ -12,14 +12,24 @@ import XMLParsing
 
 class ApiUtils {
     
+    func getAllPoiFromParcours(idParcours: Int) -> XML.Accessor {
+        var res:XML.Accessor? = nil;
+        Alamofire.request("http://jmagine.tokidev.fr/api/parcours/\(idParcours)/get_all_pois")
+            .responseData { response in
+                if let data = response.data {
+                    let xml = XML.parse(data)
+                    res = xml.list.poi
+                }
+        }
+        return (res)!
+    }
+    
     func getData(){
         Alamofire.request("http://jmagine.tokidev.fr/api/parcours/get_all")
             .responseData { response in
                 if let data = response.data {
                     let xml = XML.parse(data)
-                    guard let data = xml.data(using: .utf8) else { return }
-                    let note = try? XMLDecoder().decode(Parcours.self, from: data)
-                    print(xml.list.parcours[0] ?? "failed")
+                    print(xml.list.parcours[0].id.text ?? "failed")
                 }
         }
     }
