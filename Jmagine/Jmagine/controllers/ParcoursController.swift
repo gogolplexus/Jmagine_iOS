@@ -19,13 +19,15 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
     var mapView:MKMapView = MKMapView()
+    var instructionsRead:Bool = false
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
-        if (isViewLoaded) {
+        if (isViewLoaded && !instructionsRead) {
+            instructionsRead = true
             //Showing an alert for user which displays basic instructions.
             // create the alert
             let alert = UIAlertController(title: "Instructions", message: "Pour commencer le parcours, veuillez cliquer sur le POI de votre choix. Par défaut, nous vous proposons un ordre de passage mais vous pouvez toujours suivre le parcours dans l'ordre de votre choix.", preferredStyle: UIAlertController.Style.alert)
@@ -159,10 +161,20 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let closeImage = UIImage(named:"ic_menu")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let nextButton = UIBarButtonItem(image: closeImage, style: .plain, target: self, action: #selector(openMenu))
-        nextButton.tintColor = .black
+        let favOffImage = UIImage(named:"ic_favorite_border")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
         
-        navigationItem.leftBarButtonItem = nextButton
+        let favOnImage = UIImage(named:"ic_favorite")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        let closeButton = UIBarButtonItem(image: closeImage, style: .plain, target: self, action: #selector(openMenu))
+        closeButton.tintColor = .black
+        
+        let favButton = UIBarButtonItem(image: favOffImage, style: .plain, target: self, action: #selector(openMenu))
+        favButton.tintColor = .black
+        
+        navigationItem.leftBarButtonItem = closeButton
+        navigationItem.rightBarButtonItem = favButton
     }
     
     //Function for appending the polyline to the map
@@ -234,7 +246,50 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         poiStateTracker[poi] = ParcoursState.State.active
         let image:UIImage = #imageLiteral(resourceName: "ic_location_on_36pt")
         pin.image = image.maskWithColor(color: UIColor.JmagineColors.Blue.MainBlue)
+        showBottomBar(poi:poi)
+    }
+    
+    func showBottomBar(poi:String) {
+        //Defining the bottom control
+        let bottomView = UIView(frame: CGRect(x:0, y:(view.frame.size.height - 150), width:view.frame.size.width, height:150))
+        bottomView.backgroundColor = UIColor.JmagineColors.Dark.MainDark
         
+        //Defining the content area
+        let contentViewWidth = bottomView.frame.size.width - 20
+        let contentViewHeight = bottomView.frame.size.height - 20
+        let contentView = UIView(frame: CGRect(
+            x:(bottomView.frame.size.width - contentViewWidth)/2,
+            y:(bottomView.frame.size.height - contentViewHeight)/2,
+            width:contentViewWidth,
+            height:contentViewHeight)
+        )
+        contentView.backgroundColor = .clear
+        
+        //Defining the content itself
+        let openControlIcon = UIImage(named:"ic_keyboard_arrow_up")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        let openControlButton = UIButton(frame: CGRect(x: 0, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
+        openControlButton.addTarget(self, action: #selector(openMenu), for: .touchUpInside)
+        openControlButton.tintColor = .white
+        openControlButton.setImage(openControlIcon, for: .normal)
+        contentView.addSubview(openControlButton)
+        
+        let poiName = UILabel(frame: CGRect(x: 5, y: openControlButton.frame.maxY, width: 0, height: 0))
+        poiName.font = UIFont.systemFont(ofSize: 16)
+        poiName.textColor = .white
+        poiName.text = poi
+        poiName.sizeToFit()
+        contentView.addSubview(poiName)
+        
+        let poiImg = UIImageView(frame: CGRect(x: 0, y: poiName.frame.maxY + 10, width: 100, height: 100))
+        let poiImgUrl:String = poiList[poi]?.backgroundPic.text ?? ""
+        poiImg.imageFromURL(urlString: poiImgUrl)
+        contentView.addSubview(poiImg)
+        
+        //Appending all the views
+        bottomView.addSubview(contentView)
+        view.addSubview(bottomView)
     }
     
 }

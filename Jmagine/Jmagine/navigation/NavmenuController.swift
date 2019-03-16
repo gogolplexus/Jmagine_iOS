@@ -168,7 +168,7 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         subTitle.layer.shadowRadius = 3.0
         subTitle.layer.shadowOpacity = 1.0
         subTitle.layer.shadowOffset = CGSize(width: 0, height: 0)
-        mainTitle.layer.masksToBounds = false
+        subTitle.layer.masksToBounds = false
         subTitle.text = "Les chemins de la connaissance"
         subTitle.sizeToFit()
         

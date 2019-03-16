@@ -20,6 +20,7 @@
 		29B3A8982225CF6300411A20 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B3A8972225CF6300411A20 /* HomeController.swift */; };
 		29BA8E73223995FA007F556E /* ParcoursState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BA8E72223995FA007F556E /* ParcoursState.swift */; };
 		29BA8E752239A751007F556E /* CustomColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BA8E742239A751007F556E /* CustomColors.swift */; };
+		29EEEFBB223D41D700EF2231 /* CustomUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		29B3A8972225CF6300411A20 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		29BA8E72223995FA007F556E /* ParcoursState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursState.swift; sourceTree = "<group>"; };
 		29BA8E742239A751007F556E /* CustomColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColors.swift; sourceTree = "<group>"; };
+		29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIImageView.swift; sourceTree = "<group>"; };
 		2DC947B368D248CCC753D347 /* Pods-Jmagine.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Jmagine.debug.xcconfig"; path = "Target Support Files/Pods-Jmagine/Pods-Jmagine.debug.xcconfig"; sourceTree = "<group>"; };
 		AECF70B12E8E6C9B2B6DAF75 /* Pods_Jmagine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Jmagine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9F2407B65F1372F3D571623 /* Pods-Jmagine.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Jmagine.release.xcconfig"; path = "Target Support Files/Pods-Jmagine/Pods-Jmagine.release.xcconfig"; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 				29AD41F4222C0F21000B50BA /* ApiUtils.swift */,
 				29BA8E72223995FA007F556E /* ParcoursState.swift */,
 				29BA8E742239A751007F556E /* CustomColors.swift */,
+				29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				29205966222ADD5600B6ED94 /* FavorisController.swift in Sources */,
 				2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */,
 				29B09B792222C7B7005F77C5 /* ViewController.swift in Sources */,
+				29EEEFBB223D41D700EF2231 /* CustomUIImageView.swift in Sources */,
 				29BA8E752239A751007F556E /* CustomColors.swift in Sources */,
 				29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */,
 				29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */,
