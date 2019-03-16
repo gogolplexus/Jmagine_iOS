@@ -234,6 +234,7 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         poiStateTracker[poi] = ParcoursState.State.active
         let image:UIImage = #imageLiteral(resourceName: "ic_location_on_36pt")
         pin.image = image.maskWithColor(color: UIColor.JmagineColors.Blue.MainBlue)
+        
     }
     
 }
