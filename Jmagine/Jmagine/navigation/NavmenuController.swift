@@ -57,6 +57,7 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
             let navControl = self.navigationController
             let viewController = ParcoursController()
             viewController.currParcours = 4
+            viewController.currParcoursName = "Chemin des artistes et écrivains du vieux Nice"
             viewController.modalPresentationCapturesStatusBarAppearance = true
             navControl?.pushViewController(viewController, animated: true)
             break
@@ -139,12 +140,6 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
             UIImage.RenderingMode.alwaysTemplate)
         let nextButton = UIBarButtonItem(image: closeImage, style: .plain, target: self, action: #selector(closeMenu))
         nextButton.tintColor = .white
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
-        
-        navigationItem.titleView = titleLabel
-        titleLabel.text = "Menu"
-        titleLabel.textAlignment = .center
-        titleLabel.textColor = .white
         
         navigationItem.rightBarButtonItem = nextButton
     }

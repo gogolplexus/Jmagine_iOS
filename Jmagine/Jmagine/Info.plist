@@ -39,6 +39,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Cette app a besoin de votre position pour fonctionner correctement. Vos données resteront sur votre appareil uniquement.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>World</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

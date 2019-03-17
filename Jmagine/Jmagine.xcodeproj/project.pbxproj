@@ -20,6 +20,7 @@
 		29B3A8982225CF6300411A20 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B3A8972225CF6300411A20 /* HomeController.swift */; };
 		29BA8E73223995FA007F556E /* ParcoursState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BA8E72223995FA007F556E /* ParcoursState.swift */; };
 		29BA8E752239A751007F556E /* CustomColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BA8E742239A751007F556E /* CustomColors.swift */; };
+		29EA95A7223EA3DB00AD2146 /* QRCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA95A6223EA3DB00AD2146 /* QRCodeController.swift */; };
 		29EEEFBB223D41D700EF2231 /* CustomUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		29B3A8972225CF6300411A20 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		29BA8E72223995FA007F556E /* ParcoursState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursState.swift; sourceTree = "<group>"; };
 		29BA8E742239A751007F556E /* CustomColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColors.swift; sourceTree = "<group>"; };
+		29EA95A6223EA3DB00AD2146 /* QRCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeController.swift; sourceTree = "<group>"; };
 		29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIImageView.swift; sourceTree = "<group>"; };
 		2DC947B368D248CCC753D347 /* Pods-Jmagine.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Jmagine.debug.xcconfig"; path = "Target Support Files/Pods-Jmagine/Pods-Jmagine.debug.xcconfig"; sourceTree = "<group>"; };
 		AECF70B12E8E6C9B2B6DAF75 /* Pods_Jmagine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Jmagine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -123,6 +125,7 @@
 				29205967222AEBC900B6ED94 /* ThemeController.swift */,
 				29205969222AEBF000B6ED94 /* TutoController.swift */,
 				297B78DD2235441B0008868D /* ParcoursController.swift */,
+				29EA95A6223EA3DB00AD2146 /* QRCodeController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -270,6 +273,7 @@
 				29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */,
 				29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */,
 				2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */,
+				29EA95A7223EA3DB00AD2146 /* QRCodeController.swift in Sources */,
 				29205968222AEBC900B6ED94 /* ThemeController.swift in Sources */,
 				297B78DE2235441B0008868D /* ParcoursController.swift in Sources */,
 			);

@@ -13,13 +13,16 @@ import SwiftyXMLParser
 import XMLParsing
 import MapKit
 
-class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate {
+class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate {
     
     var currParcours:Int = 0
+    var currParcoursName:String = ""
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
     var mapView:MKMapView = MKMapView()
     var instructionsRead:Bool = false
+    let locationManager = CLLocationManager()
+    var currentCoordinate: CLLocation?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -40,10 +43,35 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         }
     }
     
+    // location manager delegate: did update locations
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        let lastLocation = locations.last!
+        // update current location properties
+        currentCoordinate = lastLocation
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Ask for Authorisation from the User.
+        self.locationManager.requestAlwaysAuthorization()
+        
+        // For use in foreground
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.distanceFilter = kCLDistanceFilterNone
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
+        }
+        
         setNeedsStatusBarAppearanceUpdate()
         initNavOptions()
+        
         view.backgroundColor = UIColor.white
         // Do any additional setup after loading the view, typically from a nib.
         
@@ -54,15 +82,15 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         SideMenuManager.default.menuFadeStatusBar = false
         self.getAllPoiFromParcours(idParcours: currParcours){ (dataXML) in
             self.drawMap(data: dataXML)
-            
-            /*for poi in self.poiList! {
-                print(poi.title.text ?? "")
-            }*/
         }
     }
     
     @objc func openMenu(sender: UIButton!) {
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
+    }
+    
+    @objc func openQRCode(sender: UIButton!) {
+        present(QRCodeController(), animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
@@ -173,6 +201,13 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let favButton = UIBarButtonItem(image: favOffImage, style: .plain, target: self, action: #selector(openMenu))
         favButton.tintColor = .black
         
+        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
+        
+        navigationItem.titleView = titleLabel
+        titleLabel.text = currParcoursName
+        titleLabel.textAlignment = .center
+        titleLabel.textColor = .black
+        
         navigationItem.leftBarButtonItem = closeButton
         navigationItem.rightBarButtonItem = favButton
     }
@@ -251,8 +286,13 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     
     func showBottomBar(poi:String) {
         //Defining the bottom control
-        let bottomView = UIView(frame: CGRect(x:0, y:(view.frame.size.height - 150), width:view.frame.size.width, height:150))
+        let bottomView = UIView(frame: CGRect(x:0, y:(view.frame.size.height - 160), width:view.frame.size.width, height:160))
         bottomView.backgroundColor = UIColor.JmagineColors.Dark.MainDark
+        
+        //Defining the blue top border
+        let topBlueBorder = UIView(frame: CGRect(x:0, y:0, width:view.frame.size.width, height:5))
+        topBlueBorder.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+        bottomView.addSubview(topBlueBorder)
         
         //Defining the content area
         let contentViewWidth = bottomView.frame.size.width - 20
@@ -275,23 +315,77 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         openControlButton.setImage(openControlIcon, for: .normal)
         contentView.addSubview(openControlButton)
         
+        let activeCount = poiStateTracker.filter{ $0.value == ParcoursState.State.active || $0.value == ParcoursState.State.completed }.count
+        let totalPoi = poiStateTracker.count
+        
         let poiName = UILabel(frame: CGRect(x: 5, y: openControlButton.frame.maxY, width: 0, height: 0))
         poiName.font = UIFont.systemFont(ofSize: 16)
         poiName.textColor = .white
-        poiName.text = poi
+        poiName.text = poi + " (\(activeCount) / \(totalPoi))"
         poiName.sizeToFit()
         contentView.addSubview(poiName)
         
-        let poiImg = UIImageView(frame: CGRect(x: 0, y: poiName.frame.maxY + 10, width: 100, height: 100))
+        let poiImg = UIImageView(frame: CGRect(x: 5, y: poiName.frame.maxY + 10, width: 50, height: 50))
         let poiImgUrl:String = poiList[poi]?.backgroundPic.text ?? ""
         poiImg.imageFromURL(urlString: poiImgUrl)
+        poiImg.layer.cornerRadius = poiImg.frame.height/2
+        poiImg.clipsToBounds = true
         contentView.addSubview(poiImg)
+        
+        let cursor = UIImageView(frame: CGRect(x: poiName.frame.maxX, y: poiName.frame.minY, width: 20, height: 20))
+        cursor.image = #imageLiteral(resourceName: "ic_location_on_48pt.png")
+        cursor.image = cursor.image?.maskWithColor(color: UIColor.JmagineColors.Blue.MainBlue)
+        contentView.addSubview(cursor)
+        
+        let distanceInfo = UILabel(frame: CGRect(x: cursor.frame.maxX, y: poiName.frame.minY, width: 0, height: 0))
+        distanceInfo.font = UIFont.systemFont(ofSize: 12)
+        distanceInfo.textColor = .white
+        distanceInfo.text = calculateNextPoiDistance(poi:poi)
+        distanceInfo.sizeToFit()
+        contentView.addSubview(distanceInfo)
+        
+        let scanPoiRect = UIView(frame: CGRect(x:contentViewWidth - 55, y:poiName.frame.maxY + 10, width:50, height:50))
+        scanPoiRect.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+        
+        let qrCodeIcon = UIImage(named:"ic_qrcode")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        let scanPoiBtn = UIButton(frame: CGRect(x: (scanPoiRect.frame.width - 40) / 2, y: 0, width: 40, height: 40))
+        scanPoiBtn.addTarget(self, action: #selector(openQRCode), for: .touchUpInside)
+        scanPoiBtn.tintColor = .black
+        scanPoiBtn.setImage(qrCodeIcon, for: .normal)
+        scanPoiRect.addSubview(scanPoiBtn)
+        
+        /* Need working
+        let scanPoiText = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        scanPoiText.font = UIFont.systemFont(ofSize: 10)
+        scanPoiText.textColor = .black
+        scanPoiText.text = "Scan"
+        scanPoiText.center.x = scanPoiRect.center.x
+        scanPoiText.sizeToFit()
+        scanPoiRect.addSubview(scanPoiText)*/
+        
+        contentView.addSubview(scanPoiRect)
         
         //Appending all the views
         bottomView.addSubview(contentView)
         view.addSubview(bottomView)
     }
     
+    func calculateNextPoiDistance(poi:String) -> String {
+        let pointLocation = CLLocation(
+            latitude:  poiList[poi]?.lat.double ?? 0,
+            longitude: poiList[poi]?.lng.double ?? 0
+        )
+        let distanceMeters = currentCoordinate?.distance(from: pointLocation)
+        let distanceKilometers = distanceMeters ?? 0 / 1000.00
+        let roundedDistanceKilometers = String(Double(round(100 * distanceKilometers) / 100)) + " km"
+        
+        if(distanceKilometers < 1) {
+            return String(Double(round(distanceMeters!))) + " m"
+        }
+        return roundedDistanceKilometers
+    }
 }
 
 //Extension to color UIImage from annotations
