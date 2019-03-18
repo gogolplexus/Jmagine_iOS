@@ -9,34 +9,36 @@
 import AVFoundation
 import UIKit
 
+protocol QRCodeDelegate {
+    func dataChanged(str: String)
+}
+
 class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+    
+    var delegate: QRCodeDelegate?
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
     
-    func initNavOptions() {
-        let backbutton = UIButton(type: .system)
-        backbutton.setTitle("Back", for: .normal)
-        backbutton.tintColor = .white
-        backbutton.setTitleColor(backbutton.tintColor, for: .normal) // You can change the TitleColor
-        backbutton.addTarget(self, action: #selector(backAction), for: .touchUpInside)
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backbutton)
-    }
-    
-    @objc func backAction() -> Void {
-        self.navigationController?.popViewController(animated: true)
+    @objc func backAction(data:String) -> Void {
+        dismiss(animated: true, completion: {
+            self.delegate?.dataChanged(str:data)
+        })
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        initNavOptions()
-        
-        view.backgroundColor = UIColor.black
+        view.backgroundColor = UIColor.white
         captureSession = AVCaptureSession()
         
+        //For test purpose only
+        /*let openControlButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 100))
+        openControlButton.addTarget(self, action: #selector(backAction), for: .touchUpInside)
+        openControlButton.tintColor = .black
+        openControlButton.backgroundColor = .black
+        view.addSubview(openControlButton)*/
+        
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
-            print("somethin")
             return
         }
         let videoInput: AVCaptureDeviceInput
@@ -113,6 +115,7 @@ class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     
     func found(code: String) {
         print(code)
+        self.backAction(data: code)
     }
     
     override var prefersStatusBarHidden: Bool {

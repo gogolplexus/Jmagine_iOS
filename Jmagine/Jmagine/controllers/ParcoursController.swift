@@ -13,7 +13,7 @@ import SwiftyXMLParser
 import XMLParsing
 import MapKit
 
-class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate {
+class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, QRCodeDelegate {
     
     var currParcours:Int = 0
     var currParcoursName:String = ""
@@ -90,7 +90,20 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     }
     
     @objc func openQRCode(sender: UIButton!) {
-        present(QRCodeController(), animated: true, completion: nil)
+        let modalViewController = QRCodeController()
+        modalViewController.modalPresentationStyle = .overCurrentContext
+        modalViewController.delegate = self
+        present(modalViewController, animated: true, completion: nil)
+    }
+    
+    func dataChanged(str: String) {
+        let alert = UIAlertController(title: "Instructions", message: "POI scanné : \(str)", preferredStyle: UIAlertController.Style.alert)
+        
+        // add the button
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        
+        // show the alert
+        self.present(alert, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
@@ -319,7 +332,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let totalPoi = poiStateTracker.count
         
         let poiName = UILabel(frame: CGRect(x: 5, y: openControlButton.frame.maxY, width: 0, height: 0))
-        poiName.font = UIFont.systemFont(ofSize: 16)
+        poiName.font = UIFont.preferredFont(forTextStyle: .headline)
+        poiName.adjustsFontForContentSizeCategory = true
         poiName.textColor = .white
         poiName.text = poi + " (\(activeCount) / \(totalPoi))"
         poiName.sizeToFit()
@@ -338,7 +352,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         contentView.addSubview(cursor)
         
         let distanceInfo = UILabel(frame: CGRect(x: cursor.frame.maxX, y: poiName.frame.minY, width: 0, height: 0))
-        distanceInfo.font = UIFont.systemFont(ofSize: 12)
+        distanceInfo.font = UIFont.preferredFont(forTextStyle: .body)
+        distanceInfo.adjustsFontForContentSizeCategory = true
         distanceInfo.textColor = .white
         distanceInfo.text = calculateNextPoiDistance(poi:poi)
         distanceInfo.sizeToFit()
@@ -381,9 +396,9 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let distanceKilometers = distanceMeters ?? 0 / 1000.00
         let roundedDistanceKilometers = String(Double(round(100 * distanceKilometers) / 100)) + " km"
         
-        if(distanceKilometers < 1) {
+        /*if(distanceKilometers < 1) {
             return String(Double(round(distanceMeters!))) + " m"
-        }
+        }*/
         return roundedDistanceKilometers
     }
 }
