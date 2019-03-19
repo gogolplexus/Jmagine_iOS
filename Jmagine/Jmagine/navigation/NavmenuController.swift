@@ -90,7 +90,8 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath as IndexPath)
         
         cell.textLabel!.textColor = .white
-        cell.textLabel!.font = UIFont.systemFont(ofSize: 22)
+        cell.textLabel!.font = UIFont.preferredFont(forTextStyle: .title2)
+        cell.textLabel!.adjustsFontForContentSizeCategory = true
         cell.textLabel!.text = "\(myArray[indexPath.row])"
         
         let backgroundView = UIView()
@@ -146,8 +147,9 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
     
     func initHeader() {
         let mainTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        mainTitle.font = UIFont.systemFont(ofSize: 28)
+        mainTitle.font = UIFont.preferredFont(forTextStyle: .title1)
         mainTitle.textColor = UIColor.JmagineColors.Blue.MainBlue
+        mainTitle.adjustsFontForContentSizeCategory = true
         mainTitle.layer.shadowColor = UIColor.black.cgColor
         mainTitle.layer.shadowRadius = 3.0
         mainTitle.layer.shadowOpacity = 1.0
@@ -157,8 +159,9 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         mainTitle.sizeToFit()
         
         let subTitle = UILabel(frame: CGRect(x: 0, y: 30, width: 0, height: 0))
-        subTitle.font = UIFont.systemFont(ofSize: 16)
+        subTitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
         subTitle.textColor = UIColor.JmagineColors.Gray.MainGray
+        mainTitle.adjustsFontForContentSizeCategory = true
         subTitle.layer.shadowColor = UIColor.black.cgColor
         subTitle.layer.shadowRadius = 3.0
         subTitle.layer.shadowOpacity = 1.0

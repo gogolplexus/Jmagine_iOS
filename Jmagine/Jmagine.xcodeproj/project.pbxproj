@@ -12,6 +12,7 @@
 		29205968222AEBC900B6ED94 /* ThemeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205967222AEBC900B6ED94 /* ThemeController.swift */; };
 		2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205969222AEBF000B6ED94 /* TutoController.swift */; };
 		2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938DADF222336AE00F00B56 /* NavmenuController.swift */; };
+		2970D96C2240CBC9005DF71A /* ParcoursDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2970D96B2240CBC9005DF71A /* ParcoursDetailController.swift */; };
 		297B78DE2235441B0008868D /* ParcoursController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297B78DD2235441B0008868D /* ParcoursController.swift */; };
 		29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD41F4222C0F21000B50BA /* ApiUtils.swift */; };
 		29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B09B762222C7B7005F77C5 /* AppDelegate.swift */; };
@@ -29,6 +30,7 @@
 		29205967222AEBC900B6ED94 /* ThemeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeController.swift; sourceTree = "<group>"; };
 		29205969222AEBF000B6ED94 /* TutoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutoController.swift; sourceTree = "<group>"; };
 		2938DADF222336AE00F00B56 /* NavmenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavmenuController.swift; sourceTree = "<group>"; };
+		2970D96B2240CBC9005DF71A /* ParcoursDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursDetailController.swift; sourceTree = "<group>"; };
 		297B78DD2235441B0008868D /* ParcoursController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursController.swift; sourceTree = "<group>"; };
 		29AD41F4222C0F21000B50BA /* ApiUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiUtils.swift; sourceTree = "<group>"; };
 		29B09B732222C7B7005F77C5 /* Jmagine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Jmagine.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,6 +128,7 @@
 				29205969222AEBF000B6ED94 /* TutoController.swift */,
 				297B78DD2235441B0008868D /* ParcoursController.swift */,
 				29EA95A6223EA3DB00AD2146 /* QRCodeController.swift */,
+				2970D96B2240CBC9005DF71A /* ParcoursDetailController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 				29EA95A7223EA3DB00AD2146 /* QRCodeController.swift in Sources */,
 				29205968222AEBC900B6ED94 /* ThemeController.swift in Sources */,
 				297B78DE2235441B0008868D /* ParcoursController.swift in Sources */,
+				2970D96C2240CBC9005DF71A /* ParcoursDetailController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,12 +408,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = FY5WU2LYP5;
 				INFOPLIST_FILE = Jmagine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.mbds.Jmagine;
+				PRODUCT_BUNDLE_IDENTIFIER = JmagineMBDS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -422,12 +427,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = FY5WU2LYP5;
 				INFOPLIST_FILE = Jmagine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.mbds.Jmagine;
+				PRODUCT_BUNDLE_IDENTIFIER = JmagineMBDS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

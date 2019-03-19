@@ -13,12 +13,14 @@ import SwiftyXMLParser
 import XMLParsing
 import MapKit
 
-class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate {
+class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, QRCodeDelegate {
     
     var currParcours:Int = 0
     var currParcoursName:String = ""
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
+    var currPoi:XML.Accessor?
+    var currPin:MKAnnotationView?
     var mapView:MKMapView = MKMapView()
     var instructionsRead:Bool = false
     let locationManager = CLLocationManager()
@@ -89,8 +91,78 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
     }
     
+    @objc func openCtrl(sender: UIButton!) {
+        let modalViewController = ParcoursDetailController()
+        modalViewController.modalPresentationStyle = .overCurrentContext
+        modalViewController.poiList = poiList
+        present(modalViewController, animated: true, completion: nil)
+    }
+    
     @objc func openQRCode(sender: UIButton!) {
-        present(QRCodeController(), animated: true, completion: nil)
+        let modalViewController = QRCodeController()
+        modalViewController.modalPresentationStyle = .overCurrentContext
+        modalViewController.delegate = self
+        present(modalViewController, animated: true, completion: nil)
+        //self.dataChanged(str:"jmagine-poi-6")
+    }
+    
+    func checkIfRightPoiScanned(idScannedPoi:Int) -> Bool {
+        if(idScannedPoi == currPoi?.id.int) {return true}
+        return false
+    }
+    
+    func validateCurrentPoi() {
+        let poiTitle = currPoi?.title.text
+        poiStateTracker[poiTitle ?? ""] = ParcoursState.State.completed
+        
+        let image:UIImage = #imageLiteral(resourceName: "ic_location_on_36pt")
+        currPin?.image = image.maskWithColor(color: UIColor.JmagineColors.Green.MainGreen)
+        currPoi = nil
+        currPin = nil
+        
+        view.viewWithTag(100)!.removeFromSuperview()
+    }
+    
+    func checkIfParcoursCompleted() -> Bool {
+        if(!poiStateTracker.values.contains(ParcoursState.State.inactive)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func dataChanged(str: String) {
+        let index:String = str.replacingOccurrences(of: "jmagine-poi-", with: "", options: NSString.CompareOptions.literal, range:nil)
+        let data:Int = Int(index) ?? 0
+        
+        if (checkIfRightPoiScanned(idScannedPoi:data)) {
+            validateCurrentPoi()
+            if(self.checkIfParcoursCompleted()){
+                let alert = UIAlertController(title: "Félicitations!", message: "Vous avez terminé le parcours !", preferredStyle: UIAlertController.Style.alert)
+                
+                // add the button
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
+            } else {
+                let alert = UIAlertController(title: "Félicitations!", message: "Vous venez de débloquer le POI : \(data)", preferredStyle: UIAlertController.Style.alert)
+                
+                // add the button
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
+            }
+        } else {
+            let alert = UIAlertController(title: "Attention", message: "Vous n'avez pas scanné le bon POI : \(data)", preferredStyle: UIAlertController.Style.alert)
+            
+            // add the button
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            
+            // show the alert
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -237,6 +309,17 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
                 
                 // show the alert
                 self.present(alert, animated: true, completion: nil)
+            } else if(poiStateTracker[poiTitle] == ParcoursState.State.completed) {
+                //Showing an alert for confirming the poi
+                // create the alert
+                let msg = "Vous avez déjà validé ce POI"
+                let alert = UIAlertController(title: "Attention", message: msg, preferredStyle: UIAlertController.Style.alert)
+                
+                // add the actions (buttons)
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
+                
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
             } else {
                 //Showing an alert for confirming the poi
                 // create the alert
@@ -281,6 +364,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         poiStateTracker[poi] = ParcoursState.State.active
         let image:UIImage = #imageLiteral(resourceName: "ic_location_on_36pt")
         pin.image = image.maskWithColor(color: UIColor.JmagineColors.Blue.MainBlue)
+        currPoi = poiList[poi]
+        currPin = pin
         showBottomBar(poi:poi)
     }
     
@@ -310,7 +395,7 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
             UIImage.RenderingMode.alwaysTemplate)
         
         let openControlButton = UIButton(frame: CGRect(x: 0, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
-        openControlButton.addTarget(self, action: #selector(openMenu), for: .touchUpInside)
+        openControlButton.addTarget(self, action: #selector(openCtrl), for: .touchUpInside)
         openControlButton.tintColor = .white
         openControlButton.setImage(openControlIcon, for: .normal)
         contentView.addSubview(openControlButton)
@@ -319,7 +404,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let totalPoi = poiStateTracker.count
         
         let poiName = UILabel(frame: CGRect(x: 5, y: openControlButton.frame.maxY, width: 0, height: 0))
-        poiName.font = UIFont.systemFont(ofSize: 16)
+        poiName.font = UIFont.preferredFont(forTextStyle: .headline)
+        poiName.adjustsFontForContentSizeCategory = true
         poiName.textColor = .white
         poiName.text = poi + " (\(activeCount) / \(totalPoi))"
         poiName.sizeToFit()
@@ -338,37 +424,40 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         contentView.addSubview(cursor)
         
         let distanceInfo = UILabel(frame: CGRect(x: cursor.frame.maxX, y: poiName.frame.minY, width: 0, height: 0))
-        distanceInfo.font = UIFont.systemFont(ofSize: 12)
+        distanceInfo.font = UIFont.preferredFont(forTextStyle: .body)
+        distanceInfo.adjustsFontForContentSizeCategory = true
         distanceInfo.textColor = .white
         distanceInfo.text = calculateNextPoiDistance(poi:poi)
         distanceInfo.sizeToFit()
         contentView.addSubview(distanceInfo)
         
-        let scanPoiRect = UIView(frame: CGRect(x:contentViewWidth - 55, y:poiName.frame.maxY + 10, width:50, height:50))
-        scanPoiRect.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+        let scanPoiRect = UIView(frame: CGRect(x:contentViewWidth - 55, y:poiName.frame.maxY + 10, width:50, height:70))
+        scanPoiRect.backgroundColor = .clear
         
-        let qrCodeIcon = UIImage(named:"ic_qrcode")?.withRenderingMode(
+        let qrCodeIcon = UIImage(named:"ic_center_focus_weak_48pt")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let scanPoiBtn = UIButton(frame: CGRect(x: (scanPoiRect.frame.width - 40) / 2, y: 0, width: 40, height: 40))
+        let scanPoiBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         scanPoiBtn.addTarget(self, action: #selector(openQRCode), for: .touchUpInside)
-        scanPoiBtn.tintColor = .black
+        scanPoiBtn.tintColor = UIColor.JmagineColors.Blue.MainBlue
         scanPoiBtn.setImage(qrCodeIcon, for: .normal)
         scanPoiRect.addSubview(scanPoiBtn)
         
-        /* Need working
-        let scanPoiText = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        scanPoiText.font = UIFont.systemFont(ofSize: 10)
-        scanPoiText.textColor = .black
+        let scanPoiText = UILabel(frame: CGRect(x: 0, y: scanPoiBtn.frame.maxY, width: 50, height: 20))
+        scanPoiText.font = UIFont.preferredFont(forTextStyle: .footnote)
+        scanPoiText.adjustsFontForContentSizeCategory = true
+        scanPoiText.textColor = UIColor.JmagineColors.Blue.MainBlue
         scanPoiText.text = "Scan"
-        scanPoiText.center.x = scanPoiRect.center.x
         scanPoiText.sizeToFit()
-        scanPoiRect.addSubview(scanPoiText)*/
+        scanPoiText.textAlignment = .center
+        scanPoiText.center = CGPoint(x:scanPoiRect.frame.width / 2, y:4 * scanPoiRect.frame.height / 5)
+        scanPoiRect.addSubview(scanPoiText)
         
         contentView.addSubview(scanPoiRect)
         
         //Appending all the views
         bottomView.addSubview(contentView)
+        bottomView.tag = 100
         view.addSubview(bottomView)
     }
     
@@ -377,8 +466,9 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
             latitude:  poiList[poi]?.lat.double ?? 0,
             longitude: poiList[poi]?.lng.double ?? 0
         )
+        
         let distanceMeters = currentCoordinate?.distance(from: pointLocation)
-        let distanceKilometers = distanceMeters ?? 0 / 1000.00
+        let distanceKilometers = distanceMeters! / 1000.00
         let roundedDistanceKilometers = String(Double(round(100 * distanceKilometers) / 100)) + " km"
         
         if(distanceKilometers < 1) {
@@ -415,3 +505,4 @@ extension UIImage {
     }
     
 }
+

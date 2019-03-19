@@ -9,34 +9,29 @@
 import AVFoundation
 import UIKit
 
+protocol QRCodeDelegate {
+    func dataChanged(str: String)
+}
+
 class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
-    var captureSession: AVCaptureSession!
-    var previewLayer: AVCaptureVideoPreviewLayer!
     
-    func initNavOptions() {
-        let backbutton = UIButton(type: .system)
-        backbutton.setTitle("Back", for: .normal)
-        backbutton.tintColor = .white
-        backbutton.setTitleColor(backbutton.tintColor, for: .normal) // You can change the TitleColor
-        backbutton.addTarget(self, action: #selector(backAction), for: .touchUpInside)
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backbutton)
-    }
+    var delegate: QRCodeDelegate?
+    var capt: AVCaptureSession!
+    var prev: AVCaptureVideoPreviewLayer!
     
-    @objc func backAction() -> Void {
-        self.navigationController?.popViewController(animated: true)
+    @objc func backAction(data:String) -> Void {
+        dismiss(animated: true, completion: {
+            self.delegate?.dataChanged(str:data)
+        })
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        initNavOptions()
-        
-        view.backgroundColor = UIColor.black
-        captureSession = AVCaptureSession()
+        view.backgroundColor = UIColor.white
+        capt = AVCaptureSession()
         
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
-            print("somethin")
             return
         }
         let videoInput: AVCaptureDeviceInput
@@ -48,8 +43,8 @@ class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
             return
         }
         
-        if (captureSession.canAddInput(videoInput)) {
-            captureSession.addInput(videoInput)
+        if (capt.canAddInput(videoInput)) {
+            capt.addInput(videoInput)
         } else {
             failed()
             return
@@ -57,8 +52,8 @@ class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
         
         let metadataOutput = AVCaptureMetadataOutput()
         
-        if (captureSession.canAddOutput(metadataOutput)) {
-            captureSession.addOutput(metadataOutput)
+        if (capt.canAddOutput(metadataOutput)) {
+            capt.addOutput(metadataOutput)
             
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
             metadataOutput.metadataObjectTypes = [.qr]
@@ -67,39 +62,39 @@ class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
             return
         }
         
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
+        prev = AVCaptureVideoPreviewLayer(session: capt)
+        prev.videoGravity = .resizeAspectFill
+        prev.frame = view.layer.bounds
+        view.layer.addSublayer(prev)
         
-        captureSession.startRunning()
+        capt.startRunning()
     }
     
     func failed() {
         let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac, animated: true)
-        captureSession = nil
+        capt = nil
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if (captureSession?.isRunning == false) {
-            captureSession.startRunning()
+        if (capt?.isRunning == false) {
+            capt.startRunning()
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if (captureSession?.isRunning == true) {
-            captureSession.stopRunning()
+        if (capt?.isRunning == true) {
+            capt.stopRunning()
         }
     }
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        captureSession.stopRunning()
+        capt.stopRunning()
         
         if let metadataObject = metadataObjects.first {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
@@ -112,14 +107,14 @@ class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     }
     
     func found(code: String) {
-        print(code)
-    }
-    
-    override var prefersStatusBarHidden: Bool {
-        return true
+        self.backAction(data: code)
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
 }
