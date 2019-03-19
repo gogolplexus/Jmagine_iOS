@@ -99,11 +99,11 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     }
     
     @objc func openQRCode(sender: UIButton!) {
-        /*let modalViewController = QRCodeController()
+        let modalViewController = QRCodeController()
         modalViewController.modalPresentationStyle = .overCurrentContext
         modalViewController.delegate = self
-        present(modalViewController, animated: true, completion: nil)*/
-        self.dataChanged(str:"jmagine-poi-6")
+        present(modalViewController, animated: true, completion: nil)
+        //self.dataChanged(str:"jmagine-poi-6")
     }
     
     func checkIfRightPoiScanned(idScannedPoi:Int) -> Bool {
@@ -119,6 +119,16 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         currPin?.image = image.maskWithColor(color: UIColor.JmagineColors.Green.MainGreen)
         currPoi = nil
         currPin = nil
+        
+        view.viewWithTag(100)!.removeFromSuperview()
+    }
+    
+    func checkIfParcoursCompleted() -> Bool {
+        if(!poiStateTracker.values.contains(ParcoursState.State.inactive)) {
+            return true
+        } else {
+            return false
+        }
     }
     
     func dataChanged(str: String) {
@@ -127,13 +137,23 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         
         if (checkIfRightPoiScanned(idScannedPoi:data)) {
             validateCurrentPoi()
-            let alert = UIAlertController(title: "Félicitations!", message: "Vous venez de débloquer le POI : \(data)", preferredStyle: UIAlertController.Style.alert)
-            
-            // add the button
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-            
-            // show the alert
-            self.present(alert, animated: true, completion: nil)
+            if(self.checkIfParcoursCompleted()){
+                let alert = UIAlertController(title: "Félicitations!", message: "Vous avez terminé le parcours !", preferredStyle: UIAlertController.Style.alert)
+                
+                // add the button
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
+            } else {
+                let alert = UIAlertController(title: "Félicitations!", message: "Vous venez de débloquer le POI : \(data)", preferredStyle: UIAlertController.Style.alert)
+                
+                // add the button
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
+            }
         } else {
             let alert = UIAlertController(title: "Attention", message: "Vous n'avez pas scanné le bon POI : \(data)", preferredStyle: UIAlertController.Style.alert)
             
@@ -411,31 +431,33 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         distanceInfo.sizeToFit()
         contentView.addSubview(distanceInfo)
         
-        let scanPoiRect = UIView(frame: CGRect(x:contentViewWidth - 55, y:poiName.frame.maxY + 10, width:50, height:50))
-        scanPoiRect.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+        let scanPoiRect = UIView(frame: CGRect(x:contentViewWidth - 55, y:poiName.frame.maxY + 10, width:50, height:70))
+        scanPoiRect.backgroundColor = .clear
         
-        let qrCodeIcon = UIImage(named:"ic_qrcode")?.withRenderingMode(
+        let qrCodeIcon = UIImage(named:"ic_center_focus_weak_48pt")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let scanPoiBtn = UIButton(frame: CGRect(x: (scanPoiRect.frame.width - 40) / 2, y: 0, width: 40, height: 40))
+        let scanPoiBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
         scanPoiBtn.addTarget(self, action: #selector(openQRCode), for: .touchUpInside)
-        scanPoiBtn.tintColor = .black
+        scanPoiBtn.tintColor = UIColor.JmagineColors.Blue.MainBlue
         scanPoiBtn.setImage(qrCodeIcon, for: .normal)
         scanPoiRect.addSubview(scanPoiBtn)
         
-        /* Need working
-        let scanPoiText = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        scanPoiText.font = UIFont.systemFont(ofSize: 10)
-        scanPoiText.textColor = .black
+        let scanPoiText = UILabel(frame: CGRect(x: 0, y: scanPoiBtn.frame.maxY, width: 50, height: 20))
+        scanPoiText.font = UIFont.preferredFont(forTextStyle: .footnote)
+        scanPoiText.adjustsFontForContentSizeCategory = true
+        scanPoiText.textColor = UIColor.JmagineColors.Blue.MainBlue
         scanPoiText.text = "Scan"
-        scanPoiText.center.x = scanPoiRect.center.x
         scanPoiText.sizeToFit()
-        scanPoiRect.addSubview(scanPoiText)*/
+        scanPoiText.textAlignment = .center
+        scanPoiText.center = CGPoint(x:scanPoiRect.frame.width / 2, y:4 * scanPoiRect.frame.height / 5)
+        scanPoiRect.addSubview(scanPoiText)
         
         contentView.addSubview(scanPoiRect)
         
         //Appending all the views
         bottomView.addSubview(contentView)
+        bottomView.tag = 100
         view.addSubview(bottomView)
     }
     
@@ -444,13 +466,14 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
             latitude:  poiList[poi]?.lat.double ?? 0,
             longitude: poiList[poi]?.lng.double ?? 0
         )
+        
         let distanceMeters = currentCoordinate?.distance(from: pointLocation)
-        let distanceKilometers = distanceMeters ?? 0 / 1000.00
+        let distanceKilometers = distanceMeters! / 1000.00
         let roundedDistanceKilometers = String(Double(round(100 * distanceKilometers) / 100)) + " km"
         
-        /*if(distanceKilometers < 1) {
+        if(distanceKilometers < 1) {
             return String(Double(round(distanceMeters!))) + " m"
-        }*/
+        }
         return roundedDistanceKilometers
     }
 }
