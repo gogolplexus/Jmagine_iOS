@@ -107,7 +107,6 @@ class QRCodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     }
     
     func found(code: String) {
-        print(code)
         self.backAction(data: code)
     }
     
