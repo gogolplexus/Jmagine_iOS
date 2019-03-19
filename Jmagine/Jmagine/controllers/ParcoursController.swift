@@ -19,6 +19,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     var currParcoursName:String = ""
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
+    var currPoi:XML.Accessor?
+    var currPin:MKAnnotationView?
     var mapView:MKMapView = MKMapView()
     var instructionsRead:Bool = false
     let locationManager = CLLocationManager()
@@ -89,21 +91,58 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
     }
     
-    @objc func openQRCode(sender: UIButton!) {
-        let modalViewController = QRCodeController()
+    @objc func openCtrl(sender: UIButton!) {
+        let modalViewController = ParcoursDetailController()
         modalViewController.modalPresentationStyle = .overCurrentContext
-        modalViewController.delegate = self
+        modalViewController.poiList = poiList
         present(modalViewController, animated: true, completion: nil)
     }
     
+    @objc func openQRCode(sender: UIButton!) {
+        /*let modalViewController = QRCodeController()
+        modalViewController.modalPresentationStyle = .overCurrentContext
+        modalViewController.delegate = self
+        present(modalViewController, animated: true, completion: nil)*/
+        self.dataChanged(str:"jmagine-poi-6")
+    }
+    
+    func checkIfRightPoiScanned(idScannedPoi:Int) -> Bool {
+        if(idScannedPoi == currPoi?.id.int) {return true}
+        return false
+    }
+    
+    func validateCurrentPoi() {
+        let poiTitle = currPoi?.title.text
+        poiStateTracker[poiTitle ?? ""] = ParcoursState.State.completed
+        
+        let image:UIImage = #imageLiteral(resourceName: "ic_location_on_36pt")
+        currPin?.image = image.maskWithColor(color: UIColor.JmagineColors.Green.MainGreen)
+        currPoi = nil
+        currPin = nil
+    }
+    
     func dataChanged(str: String) {
-        let alert = UIAlertController(title: "Instructions", message: "POI scanné : \(str)", preferredStyle: UIAlertController.Style.alert)
+        let index:String = str.replacingOccurrences(of: "jmagine-poi-", with: "", options: NSString.CompareOptions.literal, range:nil)
+        let data:Int = Int(index) ?? 0
         
-        // add the button
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        
-        // show the alert
-        self.present(alert, animated: true, completion: nil)
+        if (checkIfRightPoiScanned(idScannedPoi:data)) {
+            validateCurrentPoi()
+            let alert = UIAlertController(title: "Félicitations!", message: "Vous venez de débloquer le POI : \(data)", preferredStyle: UIAlertController.Style.alert)
+            
+            // add the button
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            
+            // show the alert
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            let alert = UIAlertController(title: "Attention", message: "Vous n'avez pas scanné le bon POI : \(data)", preferredStyle: UIAlertController.Style.alert)
+            
+            // add the button
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            
+            // show the alert
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -250,6 +289,17 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
                 
                 // show the alert
                 self.present(alert, animated: true, completion: nil)
+            } else if(poiStateTracker[poiTitle] == ParcoursState.State.completed) {
+                //Showing an alert for confirming the poi
+                // create the alert
+                let msg = "Vous avez déjà validé ce POI"
+                let alert = UIAlertController(title: "Attention", message: msg, preferredStyle: UIAlertController.Style.alert)
+                
+                // add the actions (buttons)
+                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
+                
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
             } else {
                 //Showing an alert for confirming the poi
                 // create the alert
@@ -294,6 +344,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         poiStateTracker[poi] = ParcoursState.State.active
         let image:UIImage = #imageLiteral(resourceName: "ic_location_on_36pt")
         pin.image = image.maskWithColor(color: UIColor.JmagineColors.Blue.MainBlue)
+        currPoi = poiList[poi]
+        currPin = pin
         showBottomBar(poi:poi)
     }
     
@@ -323,7 +375,7 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
             UIImage.RenderingMode.alwaysTemplate)
         
         let openControlButton = UIButton(frame: CGRect(x: 0, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
-        openControlButton.addTarget(self, action: #selector(openMenu), for: .touchUpInside)
+        openControlButton.addTarget(self, action: #selector(openCtrl), for: .touchUpInside)
         openControlButton.tintColor = .white
         openControlButton.setImage(openControlIcon, for: .normal)
         contentView.addSubview(openControlButton)
@@ -430,3 +482,4 @@ extension UIImage {
     }
     
 }
+
