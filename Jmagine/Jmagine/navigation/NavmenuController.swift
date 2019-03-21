@@ -183,4 +183,8 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         
         self.view.addConstraints([widthConstraint, heightConstraint])
     }
+    
+    override open var shouldAutorotate: Bool {
+        return false
+    }
 }

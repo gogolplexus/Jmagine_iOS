@@ -20,11 +20,18 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
     var currPoi:XML.Accessor?
-    var currPin:MKAnnotationView?
-    var mapView:MKMapView = MKMapView()
+    
     var instructionsRead:Bool = false
+    
     let locationManager = CLLocationManager()
     var currentCoordinate: CLLocation?
+    var currPin:MKAnnotationView?
+    var mapView:MKMapView = MKMapView()
+    
+    var maxLat:Double = -200
+    var maxLong:Double = -200
+    var minLat:Double = Double(MAXFLOAT)
+    var minLong:Double = Double(MAXFLOAT)
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -91,10 +98,15 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
     }
     
-    @objc func openCtrl(sender: UIButton!) {
+    func openCtrl() {
         let modalViewController = ParcoursDetailController()
         modalViewController.modalPresentationStyle = .overCurrentContext
         modalViewController.poiList = poiList
+        modalViewController.poiStateTracker = poiStateTracker
+        modalViewController.maxLat = self.maxLat
+        modalViewController.minLat = self.minLat
+        modalViewController.maxLong = self.maxLong
+        modalViewController.minLong = self.minLong
         present(modalViewController, animated: true, completion: nil)
     }
     
@@ -204,32 +216,26 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         }
         
         //find rect that encloses all coords
-        
-        var maxLat:Double = -200
-        var maxLong:Double = -200
-        var minLat:Double = Double(MAXFLOAT)
-        var minLong:Double = Double(MAXFLOAT)
-        
         for loc in locations {
             if (loc.latitude < minLat) {
-                minLat = loc.latitude
+                self.minLat = loc.latitude
             }
             
             if (loc.longitude < minLong) {
-                minLong = loc.longitude
+                self.minLong = loc.longitude
             }
             
             if (loc.latitude > maxLat) {
-                maxLat = loc.latitude
+                self.maxLat = loc.latitude
             }
             
             if (loc.longitude > maxLong) {
-                maxLong = loc.longitude
+                self.maxLong = loc.longitude
             }
         }
         
         //Center point
-        let center:CLLocationCoordinate2D = CLLocationCoordinate2DMake((maxLat + minLat) * 0.5, (maxLong + minLong) * 0.5);
+        let center:CLLocationCoordinate2D = CLLocationCoordinate2DMake((self.maxLat + self.minLat) * 0.5, (self.maxLong + self.minLong) * 0.5);
         
         //Centering view with center point
         let regionRadius: CLLocationDistance = 1000
@@ -394,8 +400,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let openControlIcon = UIImage(named:"ic_keyboard_arrow_up")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let openControlButton = UIButton(frame: CGRect(x: 0, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
-        openControlButton.addTarget(self, action: #selector(openCtrl), for: .touchUpInside)
+        let openControlButton = UIButton(frame: CGRect(x: (contentViewWidth - (openControlIcon?.size.width ?? 0)) / 2, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
+        //openControlButton.addTarget(self, action: #selector(openCtrl), for: .touchUpInside)
         openControlButton.tintColor = .white
         openControlButton.setImage(openControlIcon, for: .normal)
         contentView.addSubview(openControlButton)
@@ -459,6 +465,17 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         bottomView.addSubview(contentView)
         bottomView.tag = 100
         view.addSubview(bottomView)
+        
+        //Adding gesture
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.handleBottomBarGesture(gesture:)))
+        swipeUp.direction = .up
+        bottomView.addGestureRecognizer(swipeUp)
+    }
+    
+    @objc func handleBottomBarGesture(gesture: UISwipeGestureRecognizer) -> Void {
+        if gesture.direction == UISwipeGestureRecognizer.Direction.up {
+            openCtrl()
+        }
     }
     
     func calculateNextPoiDistance(poi:String) -> String {
@@ -467,14 +484,18 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
             longitude: poiList[poi]?.lng.double ?? 0
         )
         
-        let distanceMeters = currentCoordinate?.distance(from: pointLocation)
-        let distanceKilometers = distanceMeters! / 1000.00
+        let distanceMeters = currentCoordinate?.distance(from: pointLocation) ?? 0.0
+        let distanceKilometers = distanceMeters / 1000.00
         let roundedDistanceKilometers = String(Double(round(100 * distanceKilometers) / 100)) + " km"
         
         if(distanceKilometers < 1) {
-            return String(Double(round(distanceMeters!))) + " m"
+            return String(Double(round(distanceMeters))) + " m"
         }
         return roundedDistanceKilometers
+    }
+    
+    override open var shouldAutorotate: Bool {
+        return false
     }
 }
 
@@ -503,6 +524,5 @@ extension UIImage {
             return nil
         }
     }
-    
 }
 

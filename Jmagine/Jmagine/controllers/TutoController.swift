@@ -53,4 +53,8 @@ class TutoController: UIViewController, UINavigationControllerDelegate {
         
         navigationItem.leftBarButtonItem = nextButton
     }
+    
+    override open var shouldAutorotate: Bool {
+        return false
+    }
 }

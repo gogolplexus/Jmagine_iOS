@@ -97,4 +97,7 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         self.view.addSubview(description)
     }
     
+    override open var shouldAutorotate: Bool {
+        return false
+    }
 }

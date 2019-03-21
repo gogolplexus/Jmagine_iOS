@@ -74,6 +74,9 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
         titleLabel.textColor = .black
     }
     
+    override open var shouldAutorotate: Bool {
+        return false
+    }
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
