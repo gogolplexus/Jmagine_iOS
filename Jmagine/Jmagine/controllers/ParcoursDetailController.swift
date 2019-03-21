@@ -26,7 +26,7 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate {
         openControlButton.addTarget(self, action: #selector(closeThisModal), for: .touchUpInside)
         openControlButton.tintColor = .white
         openControlButton.setImage(openControlIcon, for: .normal)
-        view.addSubview(openControlButton)
+        view.addSubview(openControlButton) 
     }
     
     func initHeaders() {

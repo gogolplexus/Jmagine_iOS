@@ -12,11 +12,20 @@ import Alamofire
 import SwiftyXMLParser
 import XMLParsing
 
-class HomeController: UIViewController, UINavigationControllerDelegate {
+class HomeController:UITableViewController, UINavigationControllerDelegate {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
+    
+    let cellId = "cellId"
+    var parcours: [Parcour]=[Parcour]()
+    
+    
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +42,12 @@ class HomeController: UIViewController, UINavigationControllerDelegate {
         
         // (Optional) Prevent status bar area from turning black when menu appears:
         SideMenuManager.default.menuFadeStatusBar = false
+        
+        
+        createParcourArray()
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        
+        // Do any additional setup after the view, typically from a nib
     }
     
     @objc func openMenu(sender: UIButton!) {
@@ -58,4 +73,26 @@ class HomeController: UIViewController, UINavigationControllerDelegate {
         titleLabel.textAlignment = .center
         titleLabel.textColor = .black
     }
+    
+    
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let currentLastItem = parcours[indexPath.row]
+        cell.textLabel?.text = currentLastItem.parcourName
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return parcours.count
+    }
+    
+    func createParcourArray() {
+        parcours.append(Parcour(parcourName: "Valbonne", parcourImage:#imageLiteral(resourceName:"parcour1"), parcourDesc:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf"))
+        parcours.append(Parcour(parcourName: "Mamac", parcourImage:#imageLiteral(resourceName: "parcour2"), parcourDesc:"Mamac wajj jhjsfdlfhskhfksghfksghfksghb"))
+        parcours.append(Parcour(parcourName: "Vielle ville", parcourImage:#imageLiteral(resourceName: "parcour3"), parcourDesc:"vieille ville bella vista jndjsndjsbjsb "))
+    
+    }
+    
+    
 }
