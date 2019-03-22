@@ -8,23 +8,64 @@
 
 import Foundation
 import UIKit
+import SwiftyXMLParser
+import XMLParsing
+import Alamofire
 
 class DetailController: UIViewController, UINavigationControllerDelegate
 {
+    
+    var currPoi:XML.Accessor?
+    var poiList = [String: XML.Accessor]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
         initNavOptions()
-        initHeader()
-        initBody()
+        getData()
         
         
         //view.backgroundColor = UIColor.white
         // Do any additional setup after loading the view, typically from a nib.
     }
     
+    
+    func getAllPoiFromParcours(idParcours: Int,completion : @escaping (_ dataXML:XML.Accessor) -> ()){
+        Alamofire.request("http://jmagine.tokidev.fr/api/parcours/\(idParcours)/get_all_pois")
+            .responseData { response in
+                if let data = response.data {
+                    var poiData:XML.Accessor
+                    let xml = XML.parse(data)
+                    poiData = xml.list.poi
+                    print(xml.list.poi,"poidata")
+                    completion(poiData)
+                }
+        }
+    }
+    
+    func getPois(data:XML.Accessor) {
+        // print(data.text)
+        //Adding cursors
+        //And populating poiTracker dict
+        for poi in data {
+            //Populating poiTracker dict
+            poiList[poi.title.text!] = poi
+            currPoi = poi
+            
+        }
+        initHeader()
+        initBody()
+        
+    }
+    func getData(){
+        self.getAllPoiFromParcours(idParcours: 4){ (dataXML) in
+            self.getPois(data: dataXML)
+            // print(dataXML.description,"dataxml")
+        }
+    }
     func initNavOptions() {
+        
         
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
         navigationItem.titleView = titleLabel
@@ -33,14 +74,29 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         titleLabel.textColor = .black
         
     }
-    let logoImageView: UIImageView = {
-        let imageView = UIImageView(image:#imageLiteral(resourceName: "header.jpg"))
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
+    // func getImagePoi () -> UIImageView {
+    //let imagePoiUrl = currPoi?.backgroungPic.text
+    
+    /*let logoImageView: UIImageView = {
+     let imageView = UIImageView(image:#imageLiteral(resourceName: "header.jpg"))
+     imageView.contentMode = .scaleAspectFill
+     imageView.clipsToBounds = true
+     imageView.translatesAutoresizingMaskIntoConstraints = false
+     return imageView
+     }()*/
+    
+    
+    /*    if let url = URL(string: (currPoi?.backgroungPic.text)!) {
+     do {
+     let data: Data = try Data(contentsOf: url)
+     logoImageView.image = UIImage(data: data)
+     } catch {
+     }}*/
+    //        return logoImageView
+    //
+    //        }
     func initHeader() {
+        //let poiTitle = currPoi?.title.text
         let mainTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         mainTitle.font = UIFont.preferredFont(forTextStyle: .title1)
         mainTitle.textColor = UIColor.JmagineColors.Blue.MainBlue
@@ -50,7 +106,7 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         mainTitle.layer.shadowOpacity = 1.0
         mainTitle.layer.shadowOffset = CGSize(width: 0, height: 0)
         mainTitle.layer.masksToBounds = false
-        mainTitle.text = "Fennochio"
+        mainTitle.text = currPoi?.title.text
         mainTitle.sizeToFit()
         
         let subTitle = UILabel(frame: CGRect(x: 0, y: 30, width: 0, height: 0))
@@ -62,16 +118,26 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         subTitle.layer.shadowOpacity = 1.0
         subTitle.layer.shadowOffset = CGSize(width: 0, height: 0)
         subTitle.layer.masksToBounds = false
-        subTitle.text = "Destination phare de l'année"
+        subTitle.text = currPoi?.address.text
         subTitle.sizeToFit()
         
         let titleView = UIView(frame: CGRect(x:10, y:150, width:max(mainTitle.frame.size.width, subTitle.frame.size.width), height:30))
         titleView.addSubview(mainTitle)
         titleView.addSubview(subTitle)
         
-        self.logoImageView.addSubview(titleView)
-        
+        let logoImageView: UIImageView = {
+            
+            let poiImg = UIImageView(frame: CGRect(x: mainTitle.frame.maxX, y: mainTitle.frame.maxY + 10, width: mainTitle.frame.width, height: mainTitle.frame.height))
+            poiImg.imageFromURL(urlString: (currPoi?.backgroundPic.text)!)
+            poiImg.layer.cornerRadius = poiImg.frame.height/2
+            poiImg.clipsToBounds = true
+            poiImg.contentMode = .scaleAspectFill
+            poiImg.translatesAutoresizingMaskIntoConstraints = false
+            poiImg.addSubview(titleView)
+            return poiImg
+        }()
         view.addSubview(logoImageView)
+        
         let widthConstraint = NSLayoutConstraint(item: logoImageView, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: self.view.frame.width)
         
         let heightConstraint = NSLayoutConstraint(item: logoImageView, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 250)
@@ -81,8 +147,8 @@ class DetailController: UIViewController, UINavigationControllerDelegate
     func initBody() {
         
         let description = UITextView(frame: CGRect(x:0, y:0, width:350, height:350))
-        description.text = "Lorem ipsum dolor sit amet, suscipit sagittis ac fusce adipiscing vel. At nunc sed libero morbi viverra nec, donec massa urna aenean. Odio est tincidunt, porttitor fringilla dictum nunc eleifend. Vivamus vitae a nec, adipiscing nunc massa. Sit a aenean nunc, ultricies risus sollicitudin vivamus in pulvinar, ac sit, nisl fringilla volutpat dui risus metus. Dui nec, mattis vestibulum aliquam, velit nunc tristique arcu vitae. Duis sodales mauris porta felis id nonummy, blandit lorem rutrum volutpat neque eu, quam nunc at. Sit dictumst vestibulum et magna tempus vestibulum, dolor consequat est ipsum et suscipit, lobortis tempus suspendisse ac diam, imperdiet nullam primis. Nullam aliquam vitae, vel ut."
-        description.font = UIFont.systemFont(ofSize: 17)
+        description.text = currPoi?.content.text
+        description.font = UIFont.preferredFont(forTextStyle: .body)
         description.backgroundColor = .black
         description.center = self.view.center
         description.textColor = UIColor.JmagineColors.Gray.MainGray
@@ -97,7 +163,4 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         self.view.addSubview(description)
     }
     
-    override open var shouldAutorotate: Bool {
-        return false
-    }
 }
