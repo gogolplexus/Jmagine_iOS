@@ -22,11 +22,6 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
     let cellId = "cellId"
     var parcours: [Parcour]=[Parcour]()
     
-    
-    
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
@@ -45,7 +40,8 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
         
         
         createParcourArray()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(ParcourCell.self, forCellReuseIdentifier: cellId)
+        self.tableView.sectionHeaderHeight = 70
         
         // Do any additional setup after the view, typically from a nib
     }
@@ -77,14 +73,23 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ParcourCell
         let currentLastItem = parcours[indexPath.row]
-        cell.textLabel?.text = currentLastItem.parcourName
+         cell.parcour = currentLastItem
         return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return parcours.count
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 144
+    }
+
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
     }
     
     func createParcourArray() {
