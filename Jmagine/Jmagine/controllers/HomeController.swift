@@ -76,6 +76,16 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ParcourCell
         let currentLastItem = parcours[indexPath.row]
          cell.parcour = currentLastItem
+        
+         cell.layer.borderColor = UIColor.white.cgColor
+         cell.layer.borderWidth = 4.0
+        
+        
+        
+        
+        cell.layer.masksToBounds = true
+        
+        
         return cell
     }
     
@@ -96,6 +106,15 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
         parcours.append(Parcour(parcourName: "Valbonne", parcourImage:#imageLiteral(resourceName:"parcour1"), parcourDesc:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf"))
         parcours.append(Parcour(parcourName: "Mamac", parcourImage:#imageLiteral(resourceName: "parcour2"), parcourDesc:"Mamac wajj jhjsfdlfhskhfksghfksghfksghb"))
         parcours.append(Parcour(parcourName: "Vielle ville", parcourImage:#imageLiteral(resourceName: "parcour3"), parcourDesc:"vieille ville bella vista jndjsndjsbjsb "))
+        
+        parcours.append(Parcour(parcourName: "Valbonne", parcourImage:#imageLiteral(resourceName:"parcour1"), parcourDesc:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf"))
+//        parcours.append(Parcour(parcourName: "Mamac", parcourImage:#imageLiteral(resourceName: "parcour2"), parcourDesc:"Mamac wajj jhjsfdlfhskhfksghfksghfksghb"))
+//        parcours.append(Parcour(parcourName: "Vielle ville", parcourImage:#imageLiteral(resourceName: "parcour3"), parcourDesc:"vieille ville bella vista jndjsndjsbjsb "))
+//        
+//        
+//        parcours.append(Parcour(parcourName: "Valbonne", parcourImage:#imageLiteral(resourceName:"parcour1"), parcourDesc:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf"))
+//        parcours.append(Parcour(parcourName: "Mamac", parcourImage:#imageLiteral(resourceName: "parcour2"), parcourDesc:"Mamac wajj jhjsfdlfhskhfksghfksghfksghb"))
+//        parcours.append(Parcour(parcourName: "Vielle ville", parcourImage:#imageLiteral(resourceName: "parcour3"), parcourDesc:"vieille ville bella vista jndjsndjsbjsb "))
     
     }
     
