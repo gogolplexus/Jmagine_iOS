@@ -11,7 +11,7 @@ import UIKit
 import SwiftyXMLParser
 import XMLParsing
 import Alamofire
-
+import SwiftSoup
 class DetailController: UIViewController, UINavigationControllerDelegate
 {
     
@@ -127,7 +127,7 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         
         let logoImageView: UIImageView = {
             
-            let poiImg = UIImageView(frame: CGRect(x: mainTitle.frame.maxX, y: mainTitle.frame.maxY + 10, width: mainTitle.frame.width, height: mainTitle.frame.height))
+            let poiImg = UIImageView(frame: CGRect(x: mainTitle.frame.maxX, y: mainTitle.frame.maxY, width: mainTitle.frame.width, height: mainTitle.frame.height))
             poiImg.imageFromURL(urlString: (currPoi?.backgroundPic.text)!)
             poiImg.layer.cornerRadius = poiImg.frame.height/2
             poiImg.clipsToBounds = true
@@ -145,9 +145,9 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         self.view.addConstraints([widthConstraint, heightConstraint])
     }
     func initBody() {
-        
+        let htmlDescription = currPoi?.content.text	;
         let description = UITextView(frame: CGRect(x:0, y:0, width:350, height:350))
-        description.text = currPoi?.content.text
+        //description.text =
         description.font = UIFont.preferredFont(forTextStyle: .body)
         description.backgroundColor = .black
         description.center = self.view.center
