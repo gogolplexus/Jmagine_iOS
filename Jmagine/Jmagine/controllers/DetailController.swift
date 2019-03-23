@@ -38,7 +38,6 @@ class DetailController: UIViewController, UINavigationControllerDelegate
                     var poiData:XML.Accessor
                     let xml = XML.parse(data)
                     poiData = xml.list.poi
-                    print(xml.list.poi,"poidata")
                     completion(poiData)
                 }
         }
@@ -64,8 +63,15 @@ class DetailController: UIViewController, UINavigationControllerDelegate
             // print(dataXML.description,"dataxml")
         }
     }
+    @objc func backAction(sender: UIButton!){
+        self.dismiss(animated: true, completion: nil)
+    }
     func initNavOptions() {
+        let backImage = UIImage(named:"ic_arrow_back")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
         
+        let backButton = UIBarButtonItem(image: backImage, style: .plain, target: self, action: #selector(backAction))
+        backButton.tintColor = .black
         
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
         navigationItem.titleView = titleLabel
@@ -73,28 +79,10 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         titleLabel.textAlignment = .left
         titleLabel.textColor = .black
         
+        navigationItem.leftBarButtonItem = backButton
+
     }
-    // func getImagePoi () -> UIImageView {
-    //let imagePoiUrl = currPoi?.backgroungPic.text
-    
-    /*let logoImageView: UIImageView = {
-     let imageView = UIImageView(image:#imageLiteral(resourceName: "header.jpg"))
-     imageView.contentMode = .scaleAspectFill
-     imageView.clipsToBounds = true
-     imageView.translatesAutoresizingMaskIntoConstraints = false
-     return imageView
-     }()*/
-    
-    
-    /*    if let url = URL(string: (currPoi?.backgroungPic.text)!) {
-     do {
-     let data: Data = try Data(contentsOf: url)
-     logoImageView.image = UIImage(data: data)
-     } catch {
-     }}*/
-    //        return logoImageView
-    //
-    //        }
+
     func initHeader() {
         //let poiTitle = currPoi?.title.text
         let mainTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -129,7 +117,7 @@ class DetailController: UIViewController, UINavigationControllerDelegate
             
             let poiImg = UIImageView(frame: CGRect(x: mainTitle.frame.maxX, y: mainTitle.frame.maxY, width: mainTitle.frame.width, height: mainTitle.frame.height))
             poiImg.imageFromURL(urlString: (currPoi?.backgroundPic.text)!)
-            poiImg.layer.cornerRadius = poiImg.frame.height/2
+            poiImg.layer.cornerRadius = poiImg.frame.height/3
             poiImg.clipsToBounds = true
             poiImg.contentMode = .scaleAspectFill
             poiImg.translatesAutoresizingMaskIntoConstraints = false
@@ -145,9 +133,17 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         self.view.addConstraints([widthConstraint, heightConstraint])
     }
     func initBody() {
-        let htmlDescription = currPoi?.content.text	;
+        let htmlDescription = currPoi?.content.text
         let description = UITextView(frame: CGRect(x:0, y:0, width:350, height:350))
-        //description.text =
+        do{
+            let desc = try SwiftSoup.parse(htmlDescription!)
+            do{
+                let body = try desc.select("p").first()
+                description.text = try body?.text()
+                print(description.text)
+            
+            }}catch{}
+        
         description.font = UIFont.preferredFont(forTextStyle: .body)
         description.backgroundColor = .black
         description.center = self.view.center
