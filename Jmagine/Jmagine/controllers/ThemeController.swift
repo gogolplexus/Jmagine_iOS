@@ -1,18 +1,25 @@
 //
-//  HomeController.swift
+//  DetailController.swift
 //  Jmagine
 //
-//  Created by mbds on 02/03/2019.
+//  Created by hamza on 20/03/2019.
 //  Copyright © 2019 mbds. All rights reserved.
 //
 
+
 import UIKit
 import SideMenu
+import Alamofire
+import XMLParsing
+import SwiftyXMLParser
 
-class ThemeController: UIViewController, UINavigationControllerDelegate {
+class ThemeController: UITableViewController, UINavigationControllerDelegate {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
+    var themeList = [String: XML.Accessor]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,7 +61,36 @@ class ThemeController: UIViewController, UINavigationControllerDelegate {
         navigationItem.leftBarButtonItem = nextButton
     }
     
+    func getAllThemes(completion : @escaping (_ dataXML:XML.Accessor) -> ()){
+        Alamofire.request("http://jmagine.tokidev.fr/api/themes/get_all")
+            .responseData { response in
+                if let data = response.data {
+                    var themeData:XML.Accessor
+                    let xml = XML.parse(data)
+                    themeData = xml.list.theme
+                    completion(themeData)
+                }
+        }
+    }
+    func getThemes(data:XML.Accessor) {
+        
+        for theme in data {
+            themeList[theme.title.text!] = theme
+            print(theme)
+        }
+        
+    }
+    func getData(){
+        self.getAllThemes(){ (dataXML) in
+            self.getThemes(data: dataXML)
+            // print(dataXML.description,"dataxml")
+        }
+    }
     override open var shouldAutorotate: Bool {
         return false
     }
+    
+    
+    
 }
+
