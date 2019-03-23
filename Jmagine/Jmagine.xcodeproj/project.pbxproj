@@ -10,6 +10,8 @@
 		1412D3A61E72DD66F7D85031 /* Pods_Jmagine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AECF70B12E8E6C9B2B6DAF75 /* Pods_Jmagine.framework */; };
 		15216B612243B64100C44344 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15216B602243B64100C44344 /* DetailController.swift */; };
 		15216B6322440AA200C44344 /* Parcour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15216B6222440AA200C44344 /* Parcour.swift */; };
+		15216B6722443AE200C44344 /* ParcourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15216B6622443AE200C44344 /* ParcourCell.swift */; };
+		15216B69224441B100C44344 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15216B68224441B100C44344 /* Extension.swift */; };
 		29205966222ADD5600B6ED94 /* FavorisController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205965222ADD5600B6ED94 /* FavorisController.swift */; };
 		29205968222AEBC900B6ED94 /* ThemeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205967222AEBC900B6ED94 /* ThemeController.swift */; };
 		2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205969222AEBF000B6ED94 /* TutoController.swift */; };
@@ -30,6 +32,8 @@
 /* Begin PBXFileReference section */
 		15216B602243B64100C44344 /* DetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
 		15216B6222440AA200C44344 /* Parcour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parcour.swift; sourceTree = "<group>"; };
+		15216B6622443AE200C44344 /* ParcourCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcourCell.swift; sourceTree = "<group>"; };
+		15216B68224441B100C44344 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		29205965222ADD5600B6ED94 /* FavorisController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavorisController.swift; sourceTree = "<group>"; };
 		29205967222AEBC900B6ED94 /* ThemeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeController.swift; sourceTree = "<group>"; };
 		29205969222AEBF000B6ED94 /* TutoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutoController.swift; sourceTree = "<group>"; };
@@ -87,6 +91,7 @@
 				29BA8E72223995FA007F556E /* ParcoursState.swift */,
 				29BA8E742239A751007F556E /* CustomColors.swift */,
 				29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */,
+				15216B68224441B100C44344 /* Extension.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -120,6 +125,7 @@
 				29B09B7D2222C7B8005F77C5 /* Assets.xcassets */,
 				29B09B822222C7B8005F77C5 /* Info.plist */,
 				15216B6222440AA200C44344 /* Parcour.swift */,
+				15216B6622443AE200C44344 /* ParcourCell.swift */,
 			);
 			path = Jmagine;
 			sourceTree = "<group>";
@@ -277,9 +283,11 @@
 				29205966222ADD5600B6ED94 /* FavorisController.swift in Sources */,
 				2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */,
 				29B09B792222C7B7005F77C5 /* ViewController.swift in Sources */,
+				15216B6722443AE200C44344 /* ParcourCell.swift in Sources */,
 				29EEEFBB223D41D700EF2231 /* CustomUIImageView.swift in Sources */,
 				29BA8E752239A751007F556E /* CustomColors.swift in Sources */,
 				29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */,
+				15216B69224441B100C44344 /* Extension.swift in Sources */,
 				15216B6322440AA200C44344 /* Parcour.swift in Sources */,
 				29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */,
 				2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */,
