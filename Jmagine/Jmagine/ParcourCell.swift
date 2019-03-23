@@ -6,6 +6,9 @@
 //  Copyright © 2019 mbds. All rights reserved.
 //
 
+
+import Alamofire
+
 import UIKit
 class ParcourCell : UITableViewCell {
     
@@ -34,6 +37,13 @@ class ParcourCell : UITableViewCell {
         lbl.textAlignment = .left
         lbl.numberOfLines = 0
         return lbl
+    }()
+    
+    let parcourView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        //view.setCellShadow()
+        return view
     }()
     /*
     private let decreaseButton : UIButton = {
@@ -67,6 +77,8 @@ class ParcourCell : UITableViewCell {
         let imgView = UIImageView(image:#imageLiteral(resourceName: "parcour3"))
         imgView.contentMode = .scaleAspectFit
         imgView.clipsToBounds = true
+       
+       
         return imgView
     }()
     
@@ -76,15 +88,22 @@ class ParcourCell : UITableViewCell {
         addSubview(parcourImage)
         addSubview(parcourNameLabel)
         addSubview(parcourDescriptionLabel)
+        
+      
+        
+//        parcourView.setAnchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingBottom: 4, paddingRight: 8)
         /*
         addSubview(decreaseButton)
         addSubview(parcourQuantity)
         addSubview(increaseButton)
  */
         
-        //parcourImage.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: nil, paddingTop: 5, paddingLeft: 5, paddingBottom: 5, paddingRight: 0, width: 90, height: 0, enableInsets: false)
+        parcourImage.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: nil, paddingTop: 5, paddingLeft: 15, paddingBottom: 5, paddingRight: 2, width: 90, height: 0, enableInsets: false)
         parcourNameLabel.anchor(top: topAnchor, left: parcourImage.rightAnchor, bottom: nil, right: nil, paddingTop: 20, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 2, height: 0, enableInsets: false)
         parcourDescriptionLabel.anchor(top: parcourNameLabel.bottomAnchor, left: parcourImage.rightAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 2, height: 0, enableInsets: false)
+        
+        
+//          parcourImage.anchor(top: parcourNameLabel.bottomAnchor, left: parcourImage.rightAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 2, height: 0, enableInsets: false)
         
         
        // let stackView = UIStackView(arrangedSubviews: [decreaseButton,parcourQuantity,increaseButton])
@@ -101,6 +120,48 @@ class ParcourCell : UITableViewCell {
     }
     
     
+}
+
+extension UIImage {
+    func resizeImage(_ dimension: CGFloat, opaque: Bool, contentMode: UIView.ContentMode = .scaleAspectFit) -> UIImage {
+        var width: CGFloat
+        var height: CGFloat
+        var newImage: UIImage
+        
+        let size = self.size
+        let aspectRatio =  size.width/size.height
+        
+        switch contentMode {
+        case .scaleAspectFit:
+            if aspectRatio > 1 {                            // Landscape image
+                width = dimension
+                height = dimension / aspectRatio
+            } else {                                        // Portrait image
+                height = dimension
+                width = dimension * aspectRatio
+            }
+            
+        default:
+            fatalError("UIIMage.resizeToFit(): FATAL: Unimplemented ContentMode")
+        }
+        
+        if #available(iOS 10.0, *) {
+            let renderFormat = UIGraphicsImageRendererFormat.default()
+            renderFormat.opaque = opaque
+            let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: renderFormat)
+            newImage = renderer.image {
+                (context) in
+                self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+            }
+        } else {
+            UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), opaque, 0)
+            self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+            newImage = UIGraphicsGetImageFromCurrentImageContext()!
+            UIGraphicsEndImageContext()
+        }
+        
+        return newImage
+    }
 }
 
 
