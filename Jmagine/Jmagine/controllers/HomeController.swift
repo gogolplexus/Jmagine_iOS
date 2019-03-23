@@ -79,6 +79,9 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
         
     }
     
+    override open var shouldAutorotate: Bool {
+        return false
+    }
     
     
 //    func initSearchOptions() {
