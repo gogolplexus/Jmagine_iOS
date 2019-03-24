@@ -17,6 +17,7 @@
 		2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205969222AEBF000B6ED94 /* TutoController.swift */; };
 		2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938DADF222336AE00F00B56 /* NavmenuController.swift */; };
 		2970D96C2240CBC9005DF71A /* ParcoursDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2970D96B2240CBC9005DF71A /* ParcoursDetailController.swift */; };
+		297879EC22481E18003F0B7A /* CustomUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297879EB22481E18003F0B7A /* CustomUIButton.swift */; };
 		297B78DE2235441B0008868D /* ParcoursController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297B78DD2235441B0008868D /* ParcoursController.swift */; };
 		299731ED2247CD8100537D99 /* JmagineDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 299731EB2247CD8100537D99 /* JmagineDataModel.xcdatamodeld */; };
 		299731EF2247D2B400537D99 /* PersistentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299731EE2247D2B400537D99 /* PersistentContainer.swift */; };
@@ -41,6 +42,7 @@
 		29205969222AEBF000B6ED94 /* TutoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutoController.swift; sourceTree = "<group>"; };
 		2938DADF222336AE00F00B56 /* NavmenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavmenuController.swift; sourceTree = "<group>"; };
 		2970D96B2240CBC9005DF71A /* ParcoursDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursDetailController.swift; sourceTree = "<group>"; };
+		297879EB22481E18003F0B7A /* CustomUIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIButton.swift; sourceTree = "<group>"; };
 		297B78DD2235441B0008868D /* ParcoursController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursController.swift; sourceTree = "<group>"; };
 		299731EC2247CD8100537D99 /* JmagineDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = JmagineDataModel.xcdatamodel; sourceTree = "<group>"; };
 		299731EE2247D2B400537D99 /* PersistentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentContainer.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */,
 				15216B68224441B100C44344 /* Extension.swift */,
 				299731EE2247D2B400537D99 /* PersistentContainer.swift */,
+				297879EB22481E18003F0B7A /* CustomUIButton.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				15216B6722443AE200C44344 /* ParcourCell.swift in Sources */,
 				29EEEFBB223D41D700EF2231 /* CustomUIImageView.swift in Sources */,
 				29BA8E752239A751007F556E /* CustomColors.swift in Sources */,
+				297879EC22481E18003F0B7A /* CustomUIButton.swift in Sources */,
 				29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */,
 				15216B69224441B100C44344 /* Extension.swift in Sources */,
 				15216B6322440AA200C44344 /* Parcour.swift in Sources */,

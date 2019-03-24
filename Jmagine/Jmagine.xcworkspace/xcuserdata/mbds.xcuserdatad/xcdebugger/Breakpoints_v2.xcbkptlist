@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jmagine/controllers/ParcoursController.swift"
-            timestampString = "575143580.932005"
+            timestampString = "575153078.180939"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "581"
-            endingLineNumber = "581"
+            startingLineNumber = "577"
+            endingLineNumber = "577"
             landmarkName = "calculateNextPoiDistance(poi:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Jmagine/controllers/ParcoursController.swift"
-            timestampString = "575143580.932106"
+            timestampString = "575153078.181026"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "64"

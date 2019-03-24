@@ -37,7 +37,7 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         let rightArrow = UIImage(named:"ic_chevron_right")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let toDetailBtn = PassableUIButton(frame: CGRect(x: (cellContentFrame.frame.size.width - 40), y: (cellContentFrame.frame.size.height - 30) / 2, width: 30, height: 30))
+        let toDetailBtn = CustomUIButton(frame: CGRect(x: (cellContentFrame.frame.size.width - 40), y: (cellContentFrame.frame.size.height - 30) / 2, width: 30, height: 30))
         toDetailBtn.setImage(rightArrow, for: .normal)
         toDetailBtn.tintColor = .black
         toDetailBtn.addTarget(self, action: #selector(self.openPOIDetail(_:)), for:.touchUpInside)
@@ -125,7 +125,7 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func openPOIDetail(_ sender: PassableUIButton) {        
+    @IBAction func openPOIDetail(_ sender: CustomUIButton) {
         let index:String = sender.params["poiName"] as! String
         let modalViewController = DetailController()
         modalViewController.modalPresentationStyle = .overCurrentContext
@@ -193,18 +193,5 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
     
     override open var shouldAutorotate: Bool {
         return false
-    }
-}
-
-class PassableUIButton: UIButton{
-    var params: Dictionary<String, Any>
-    override init(frame: CGRect) {
-        self.params = [:]
-        super.init(frame: frame)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        self.params = [:]
-        super.init(coder: aDecoder)
     }
 }

@@ -17,7 +17,7 @@ import CoreData
 class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, QRCodeDelegate {
     var container: NSPersistentContainer!
     
-    var currParcours:Int = 0
+    var currParcours:Int64 = 0
     var currParcoursName:String = ""
     var currParcoursImg:String = ""
     var poiList = [String: XML.Accessor]()
@@ -261,7 +261,7 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         view.addSubview(mapView)
     }
     
-    func getAllPoiFromParcours(idParcours: Int,completion : @escaping (_ dataXML:XML.Accessor) -> ()){
+    func getAllPoiFromParcours(idParcours: Int64,completion : @escaping (_ dataXML:XML.Accessor) -> ()){
         Alamofire.request("http://jmagine.tokidev.fr/api/parcours/\(idParcours)/get_all_pois")
             .responseData { response in
                 if let data = response.data {
@@ -335,10 +335,6 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
             favoris.setValue(currParcours, forKey: "parcoursId")
             favoris.setValue(currParcoursName, forKey: "parcoursName")
             favoris.setValue(currParcoursImg, forKey: "parcoursImg")
-            
-            print(currParcours)
-            print(currParcoursName)
-            print(currParcoursImg)
             
             do {
                 try managedContext.save()

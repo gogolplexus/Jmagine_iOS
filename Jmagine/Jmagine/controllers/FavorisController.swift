@@ -42,25 +42,88 @@ class FavorisController: UIViewController, UINavigationControllerDelegate, UICol
         return self.favorisCount
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let navControl = self.navigationController
+        let parcoursId = self.favoris[indexPath.row].parcoursId
+        let viewController = ParcoursController()
+        
+        viewController.currParcours = parcoursId
+        viewController.currParcoursName = self.favoris[indexPath.row].parcoursName ?? ""
+        viewController.currParcoursImg = self.favoris[indexPath.row].parcoursImg ?? ""
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        viewController.container = appDelegate.persistentContainer
+        viewController.modalPresentationCapturesStatusBarAppearance = true
+        navControl?.pushViewController(viewController, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "favoris", for: indexPath)
         let cellContentFrame = UIView(frame: CGRect(x: 0, y: 0, width: cell.bounds.size.width, height: cell.bounds.size.height))
         
-        print(favoris[0].id)
-        
-        let rightArrow = UIImage(named:"ic_chevron_right")?.withRenderingMode(
+        let deleteIcon = UIImage(named:"ic_close_48pt")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let title = UILabel(frame: CGRect(x:15, y:0, width:cellContentFrame.frame.size.width - 40, height:0))
+        let parcoursPic = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        parcoursPic.imageFromURL(urlString: self.favoris[indexPath.row].parcoursImg ?? "")
+        parcoursPic.layer.cornerRadius = parcoursPic.frame.height/2
+        parcoursPic.clipsToBounds = true
+        parcoursPic.center.y = cell.center.y
+        cellContentFrame.addSubview(parcoursPic)
+        
+        let title = UILabel(frame: CGRect(x:(parcoursPic.frame.maxX + 10), y:0, width:cellContentFrame.frame.size.width - 70, height: 40))
+        title.numberOfLines = 0
         title.font = UIFont.preferredFont(forTextStyle: .body)
         title.adjustsFontForContentSizeCategory = true
         title.text = self.favoris[indexPath.row].parcoursName
         title.tintColor = .black
+        title.center.y = cell.center.y
         title.sizeToFit()
         cellContentFrame.addSubview(title)
         
+        let deleteBtn = CustomUIButton(frame: CGRect(
+            x: (title.frame.maxX + 20),
+            y: 0,
+            width: 20,
+            height: 20))
+        deleteBtn.setImage(deleteIcon, for: .normal)
+        deleteBtn.tintColor = .black
+        deleteBtn.center.y = cell.center.y
+        deleteBtn.addTarget(self, action: #selector(self.deleteFromFav(_:)), for:.touchUpInside)
+        deleteBtn.params["parcoursId"] = self.favoris[indexPath.row].parcoursId
+        deleteBtn.params["indexPath"] = indexPath
+        cellContentFrame.addSubview(deleteBtn)
+        
         cell.contentView.addSubview(cellContentFrame)
         return cell
+    }
+    
+    @IBAction func deleteFromFav(_ sender: CustomUIButton) {
+        let index:Int64 = sender.params["parcoursId"] as! Int64
+        let indexPath:IndexPath = sender.params["indexPath"] as! IndexPath
+        let managedContext = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Favoris")
+        fetchRequest.predicate = NSPredicate(format: "parcoursId = %d", index)
+        
+        do {
+            let test = try managedContext.fetch(fetchRequest)
+            let favToDelete = test[0] as! NSManagedObject
+            managedContext.delete(favToDelete)
+            do {
+                try managedContext.save()
+                self.favoris.remove(at: indexPath.row)
+                self.favorisCount -= 1
+                collectionView?.deleteItems(at: [indexPath])
+                
+                if(self.favorisCount == 0){
+                    self.showEmptyMsg()
+                }
+            } catch let error {
+                print("NSAsynchronousFetchRequest error: \(error)")
+            }
+        } catch let error {
+            print("NSAsynchronousFetchRequest error: \(error)")
+        }
+        
     }
     
     @objc func openMenu(sender: UIButton!) {
@@ -116,12 +179,6 @@ class FavorisController: UIViewController, UINavigationControllerDelegate, UICol
     }
     
     func showFavorites(data:[Favoris]) {
-        data.forEach{ fav in
-            print(fav.id)
-            print(fav.parcoursId)
-            print(fav.parcoursImg)
-            print(fav.parcoursName)
-        }
         self.favoris = data
         self.favorisCount = data.count
         self.initTableView()
