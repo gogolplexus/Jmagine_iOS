@@ -68,9 +68,6 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
             navControl?.pushViewController(viewController, animated: true)
             break
         }
-        
-        print("Num: \(indexPath.row)")
-        print("Value: \(myArray[indexPath.row])")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

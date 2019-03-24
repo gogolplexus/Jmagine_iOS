@@ -15,6 +15,7 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
     
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
+    var selectedPoi = ""
     
     var maxLat:Double = -200
     var maxLong:Double = -200
@@ -33,13 +34,24 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         let cellContentFrame = UIView(frame: CGRect(x: 0, y: 0, width: cell.bounds.size.width, height: cell.bounds.size.height))
         cellContentFrame.layer.cornerRadius = 25
         
+        let rightArrow = UIImage(named:"ic_chevron_right")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        let toDetailBtn = PassableUIButton(frame: CGRect(x: (cellContentFrame.frame.size.width - 40), y: (cellContentFrame.frame.size.height - 30) / 2, width: 30, height: 30))
+        toDetailBtn.setImage(rightArrow, for: .normal)
+        toDetailBtn.tintColor = .black
+        toDetailBtn.addTarget(self, action: #selector(self.openPOIDetail(_:)), for:.touchUpInside)
+        toDetailBtn.params["poiName"] = Array(poiList.values)[indexPath.row].title.text ?? ""
+        
         switch Array(poiStateTracker.values)[indexPath.row] {
         case ParcoursState.State.inactive:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Gray.MainGray
         case ParcoursState.State.active:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+            //cellContentFrame.addSubview(toDetailBtn)
         default:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Green.MainGreen
+            //cellContentFrame.addSubview(toDetailBtn)
         }
         
         let cursor = UIImageView(frame: CGRect(x: 10, y: (cellContentFrame.frame.size.height - 30) / 2, width: 30, height: 30))
@@ -113,6 +125,15 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func openPOIDetail(_ sender: PassableUIButton) {        
+        let index:String = sender.params["poiName"] as! String
+        let modalViewController = DetailController()
+        modalViewController.modalPresentationStyle = .overCurrentContext
+        modalViewController.poiList = poiList
+        modalViewController.currPoi = poiList[index]
+        present(modalViewController, animated: true, completion: nil)
+    }
+    
     @objc func handleCloseModalGesture(gesture: UISwipeGestureRecognizer) -> Void {
         if gesture.direction == UISwipeGestureRecognizer.Direction.down {
             closeThisModal()
@@ -172,5 +193,18 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
     
     override open var shouldAutorotate: Bool {
         return false
+    }
+}
+
+class PassableUIButton: UIButton{
+    var params: Dictionary<String, Any>
+    override init(frame: CGRect) {
+        self.params = [:]
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        self.params = [:]
+        super.init(coder: aDecoder)
     }
 }
