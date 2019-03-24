@@ -18,9 +18,13 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
         return .lightContent
     }
     
+    //final let url = URL(string: )
     
     let parcourId = "parcourId"
     var parcours: [Parcour]=[Parcour]()
+    
+    var currParcour:XML.Accessor?
+    var parcoursList = [String: XML.Accessor]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +53,8 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
 //        self.view.addSubview(searchBar)
         
         // Do any additional setup after the view, typically from a nib
+        
+        getData()
     }
     
     @objc func openMenu(sender: UIButton!) {
@@ -98,8 +104,10 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: parcourId, for: indexPath) as! ParcourCell
-        let currentLastItem = parcours[indexPath.row]
-         cell.parcour = currentLastItem
+        let currentLastItem = parcours[indexPath.row]  // un int
+        cell.parcour = currentLastItem
+//        let currentLastItem = Array(parcoursList.values)[indexPath.row]
+//        cell.parcoursList = currentLastItem
         
          cell.layer.borderColor = UIColor.lightGray.cgColor
          cell.layer.borderWidth = 4.0
@@ -123,13 +131,24 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
         return 40
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+            return "Art"
+        }
+    
     
     func createParcourArray() {
-        parcours.append(Parcour(parcourName: "Valbonne", parcourImage:#imageLiteral(resourceName:"parcour1"), parcourDesc:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf"))
-        parcours.append(Parcour(parcourName: "Mamac", parcourImage:#imageLiteral(resourceName: "parcour2"), parcourDesc:"Mamac wajj jhjsfdlfhskhfksghfksghfksghb"))
-        parcours.append(Parcour(parcourName: "Vielle ville", parcourImage:#imageLiteral(resourceName: "parcour3"), parcourDesc:"vieille ville bella vista jndjsndjsbjsb "))
+        parcours.append(Parcour(id: 1, title: "Valbonne", description:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf",themes: "Art", backgroundPic:#imageLiteral(resourceName:"parcour1")))
+        parcours.append(Parcour(id :2, title: "Mamac", description:"Mamac wajj jhjsfdlfhskhfksghfksghfksghb",themes:"Art", backgroundPic:#imageLiteral(resourceName: "parcour2")))
         
-        parcours.append(Parcour(parcourName: "Valbonne", parcourImage:#imageLiteral(resourceName:"parcour1"), parcourDesc:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf"))
+         parcours.append(Parcour(id :3, title: "Vieille Ville", description:"Vieille wajj jhjsfdlfhskhfksghfksghfksghb",themes:"Art", backgroundPic:#imageLiteral(resourceName: "parcour2")))
+        
+         parcours.append(Parcour(id :4, title: "Vieux Nice", description:"Vieux NIce wajj jhjsfdlfhskhfksghfksghfksghb",themes:"Art", backgroundPic:#imageLiteral(resourceName: "parcour2")))
+        
+         parcours.append(Parcour(id :5, title: "MBDS", description:"MBDS wajj jhjsfdlfhskhfksghfksghfksghb",themes:"Art", backgroundPic:#imageLiteral(resourceName: "parcour2")))
+        
+//        parcours.append(Parcour(id: 3, title: "Vielle ville", description:"vieille ville bella vista jndjsndjsbjsb ", themes:"Art", backgroudPic:#imageLiteral(resourceName: "parcour3")))
+//
+//        parcours.append(Parcour(parcourName: "Valbonne", parcourImage:#imageLiteral(resourceName:"parcour1"), parcourDesc:"voici le vieux nice jqdhkqjhdkqfbhkqbfkqhbf"))
 //        parcours.append(Parcour(parcourName: "Mamac", parcourImage:#imageLiteral(resourceName: "parcour2"), parcourDesc:"Mamac wajj jhjsfdlfhskhfksghfksghfksghb"))
 //        parcours.append(Parcour(parcourName: "Vielle ville", parcourImage:#imageLiteral(resourceName: "parcour3"), parcourDesc:"vieille ville bella vista jndjsndjsbjsb "))
 //        
@@ -145,18 +164,43 @@ class HomeController:UITableViewController, UINavigationControllerDelegate {
     
     
     
-//    func getAllParcours(idParcours: Int,completion : @escaping (_ dataXML:XML.Accessor) -> ()){
-//        Alamofire.request("http://jmagine.tokidev.fr/api/parcours/\(idParcours/get_all_pois")
-//            .responseData { response in
-//                if let data = response.data {
-//                    var parcourData:XML.Accessor
-//                    let xml = XML.parse(data)
-//                    parcourData = xml.list.parcours
-//                    completion(parcoursData)
-//                }
-//        }
-//    }
-//
+    func getAllParcours(completion : @escaping (_ dataXML:XML.Accessor) -> ()){
+        Alamofire.request("http://jmagine.tokidev.fr/api/parcours/get_all")
+            .responseData { response in
+                if let data = response.data {
+                    var parcourData:XML.Accessor
+                    let xml = XML.parse(data)
+                    parcourData = xml.list.parcours
+                    print(xml.list.parcour,"parcourdata")
+                    completion(parcourData)
+                }
+        }
+    }
+    
+    
+    func getParcours(data:XML.Accessor) {
+        // print(data.text)
+        //Adding cursors
+        //And populating poiTracker dict
+        for parcour in data {
+            //Populating poiTracker dict
+            parcoursList[parcour.title.text!] = parcour
+            currParcour = parcour
+            
+        }
+//        initHeader()
+//        initBody()
+        
+    }
+
+    
+    func getData(){
+        self.getAllParcours(){ (dataXML) in
+            self.getParcours(data: dataXML)
+            // print(dataXML.description,"dataxml")
+        }
+    }
+
     
 }
 

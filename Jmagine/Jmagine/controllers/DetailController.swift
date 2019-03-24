@@ -11,7 +11,7 @@ import UIKit
 import SwiftyXMLParser
 import XMLParsing
 import Alamofire
-import SwiftSoup
+//import SwiftSoup
 class DetailController: UIViewController, UINavigationControllerDelegate
 {
     

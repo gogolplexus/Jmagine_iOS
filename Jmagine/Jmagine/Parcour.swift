@@ -9,7 +9,10 @@
 import UIKit
 
 struct Parcour{
-    var parcourName : String
-    var parcourImage : UIImage
-    var parcourDesc : String
-}
+    var id : Int
+    var title : String
+    var description : String
+    var themes: String
+    var backgroundPic  : UIImage
+    
+    }
