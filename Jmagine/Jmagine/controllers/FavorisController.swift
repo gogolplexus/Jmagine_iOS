@@ -70,7 +70,7 @@ class FavorisController: UIViewController, UINavigationControllerDelegate, UICol
         parcoursPic.center.y = cell.center.y
         cellContentFrame.addSubview(parcoursPic)
         
-        let title = UILabel(frame: CGRect(x:(parcoursPic.frame.maxX + 10), y:0, width:cellContentFrame.frame.size.width - 70, height: 40))
+        let title = UILabel(frame: CGRect(x:(parcoursPic.frame.maxX + 10), y:0, width:cellContentFrame.frame.size.width - 80, height: 40))
         title.numberOfLines = 0
         title.font = UIFont.preferredFont(forTextStyle: .body)
         title.adjustsFontForContentSizeCategory = true
@@ -81,16 +81,17 @@ class FavorisController: UIViewController, UINavigationControllerDelegate, UICol
         cellContentFrame.addSubview(title)
         
         let deleteBtn = CustomUIButton(frame: CGRect(
-            x: (title.frame.maxX + 20),
+            x: (title.frame.maxX) + 10,
             y: 0,
-            width: 20,
-            height: 20))
+            width: 30,
+            height: 30))
         deleteBtn.setImage(deleteIcon, for: .normal)
         deleteBtn.tintColor = .black
         deleteBtn.center.y = cell.center.y
         deleteBtn.addTarget(self, action: #selector(self.deleteFromFav(_:)), for:.touchUpInside)
         deleteBtn.params["parcoursId"] = self.favoris[indexPath.row].parcoursId
         deleteBtn.params["indexPath"] = indexPath
+        
         cellContentFrame.addSubview(deleteBtn)
         
         cell.contentView.addSubview(cellContentFrame)
