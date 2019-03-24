@@ -12,14 +12,18 @@ import Alamofire
 import SwiftyXMLParser
 import XMLParsing
 import MapKit
+import CoreData
 
 class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, QRCodeDelegate {
+    var container: NSPersistentContainer!
     
     var currParcours:Int = 0
     var currParcoursName:String = ""
+    var currParcoursImg:String = ""
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
     var currPoi:XML.Accessor?
+    var isInFav:Bool?
     
     var instructionsRead:Bool = false
     
@@ -63,6 +67,12 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        guard container != nil else {
+            fatalError("This view needs a persistent container.")
+        }
+        
+        self.renderFavoris()
         
         // Ask for Authorisation from the User.
         self.locationManager.requestAlwaysAuthorization()
@@ -267,17 +277,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let closeImage = UIImage(named:"ic_menu")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let favOffImage = UIImage(named:"ic_favorite_border")?.withRenderingMode(
-            UIImage.RenderingMode.alwaysTemplate)
-        
-        let favOnImage = UIImage(named:"ic_favorite")?.withRenderingMode(
-            UIImage.RenderingMode.alwaysTemplate)
-        
         let closeButton = UIBarButtonItem(image: closeImage, style: .plain, target: self, action: #selector(openMenu))
         closeButton.tintColor = .black
-        
-        let favButton = UIBarButtonItem(image: favOffImage, style: .plain, target: self, action: #selector(openMenu))
-        favButton.tintColor = .black
         
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
         
@@ -287,7 +288,100 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         titleLabel.textColor = .black
         
         navigationItem.leftBarButtonItem = closeButton
+    }
+    
+    func initFavoris(isInFav:Bool){
+        self.isInFav = isInFav
+        var favImage = UIImage(named:"ic_favorite_border")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        if (isInFav) {
+            favImage = UIImage(named:"ic_favorite")?.withRenderingMode(
+                UIImage.RenderingMode.alwaysTemplate)
+        }
+        
+        let favButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(updateFavoris))
+        favButton.tintColor = .black
         navigationItem.rightBarButtonItem = favButton
+    }
+    
+    @objc func updateFavoris() {
+        let managedContext = container.viewContext
+        if(isInFav!) {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Favoris")
+            fetchRequest.predicate = NSPredicate(format: "parcoursId = %d", currParcours)
+            
+            do {
+                let test = try managedContext.fetch(fetchRequest)
+                let favToDelete = test[0] as! NSManagedObject
+                managedContext.delete(favToDelete)
+                do {
+                    try managedContext.save()
+                    var favImage = UIImage(named:"ic_favorite_border")?.withRenderingMode(
+                        UIImage.RenderingMode.alwaysTemplate)
+                    let favButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(updateFavoris))
+                    favButton.tintColor = .black
+                    navigationItem.rightBarButtonItem = favButton
+                } catch let error {
+                    print("NSAsynchronousFetchRequest error: \(error)")
+                }
+            } catch let error {
+                print("NSAsynchronousFetchRequest error: \(error)")
+            }
+        } else {
+            let favorisEntity = NSEntityDescription.entity(forEntityName: "Favoris", in: managedContext)!
+            
+            let favoris = NSManagedObject(entity: favorisEntity, insertInto: managedContext)
+            favoris.setValue(currParcours, forKey: "parcoursId")
+            favoris.setValue(currParcoursName, forKey: "parcoursName")
+            favoris.setValue(currParcoursImg, forKey: "parcoursImg")
+            
+            print(currParcours)
+            print(currParcoursName)
+            print(currParcoursImg)
+            
+            do {
+                try managedContext.save()
+                let favImage = UIImage(named:"ic_favorite")?.withRenderingMode(
+                    UIImage.RenderingMode.alwaysTemplate)
+                let favButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(updateFavoris))
+                favButton.tintColor = .black
+                navigationItem.rightBarButtonItem = favButton
+            } catch let error {
+                print("NSAsynchronousFetchRequest error: \(error)")
+            }
+        }
+    }
+    
+    func renderFavoris() {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Favoris")
+        fetchRequest.predicate = NSPredicate(format: "parcoursId = %d", currParcours)
+        let privateManagedObjectContext = container.newBackgroundContext()
+        
+        // Creates `asynchronousFetchRequest` with the fetch request and the completion closure
+        let asynchronousFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { asynchronousFetchResult in
+            
+            // Retrieves an array of dogs from the fetch result `finalResult`
+            guard let result = asynchronousFetchResult.finalResult as? [Favoris] else { return }
+            
+            // Dispatches to use the data in the main queue
+            DispatchQueue.main.async {
+                if (!result.isEmpty) {
+                    print(result[0].parcoursId)
+                    self.initFavoris(isInFav:true)
+                } else {
+                    print(result)
+                    self.initFavoris(isInFav:false)
+                }
+            }
+        }
+        
+        do {
+            // Executes `asynchronousFetchRequest`
+            try privateManagedObjectContext.execute(asynchronousFetchRequest)
+        } catch let error {
+            print("NSAsynchronousFetchRequest error: \(error)")
+        }
     }
     
     //Function for appending the polyline to the map
