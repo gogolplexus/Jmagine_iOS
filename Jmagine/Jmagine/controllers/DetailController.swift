@@ -11,61 +11,25 @@ import UIKit
 import SwiftyXMLParser
 import XMLParsing
 import Alamofire
-//import SwiftSoup
-class DetailController: UIViewController, UINavigationControllerDelegate
-{
+import SwiftSoup
+import WebKit
+
+class DetailController: UIViewController, UINavigationControllerDelegate, WKUIDelegate {
     
     var currPoi:XML.Accessor?
     var poiList = [String: XML.Accessor]()
-    
+    var webView: WKWebView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate()
-        initNavOptions()
-        getData()
-        //initHeader()
-        //initBody()
-        //view.backgroundColor = UIColor.white
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    
-    func getAllPoiFromParcours(idParcours: Int,completion : @escaping (_ dataXML:XML.Accessor) -> ()){
-        Alamofire.request("http://jmagine.tokidev.fr/api/parcours/\(idParcours)/get_all_pois")
-            .responseData { response in
-                if let data = response.data {
-                    var poiData:XML.Accessor
-                    let xml = XML.parse(data)
-                    poiData = xml.list.poi
-                    print(xml.list.poi,"poidata")
-                    completion(poiData)
-                }
-        }
-    }
-    
-    func getPois(data:XML.Accessor) {
-        // print(data.text)
-        //Adding cursors
-        //And populating poiTracker dict
-        for poi in data {
-            //Populating poiTracker dict
-            poiList[poi.title.text!] = poi
-            currPoi = poi
-            
-        }
         initHeader()
+        initNavOptions()
         initBody()
-        
+        view.backgroundColor = .white
     }
-    func getData(){
-        self.getAllPoiFromParcours(idParcours: 4){ (dataXML) in
-            self.getPois(data: dataXML)
-            // print(dataXML.description,"dataxml")
-        }
-    }
+    
     func initNavOptions() {
-        
         let backbutton = UIButton(type: .system)
         backbutton.frame = CGRect(x: 30, y: 50, width: 150, height: 50)
         backbutton.setTitle("Retour", for: .normal)
@@ -85,32 +49,10 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         self.dismiss(animated: true, completion: nil)
     }
     
-    // func getImagePoi () -> UIImageView {
-    //let imagePoiUrl = currPoi?.backgroungPic.text
-    
-    /*let logoImageView: UIImageView = {
-     let imageView = UIImageView(image:#imageLiteral(resourceName: "header.jpg"))
-     imageView.contentMode = .scaleAspectFill
-     imageView.clipsToBounds = true
-     imageView.translatesAutoresizingMaskIntoConstraints = false
-     return imageView
-     }()*/
-    
-    
-    /*    if let url = URL(string: (currPoi?.backgroungPic.text)!) {
-     do {
-     let data: Data = try Data(contentsOf: url)
-     logoImageView.image = UIImage(data: data)
-     } catch {
-     }}*/
-    //        return logoImageView
-    //
-    //        }
     func initHeader() {
-        //let poiTitle = currPoi?.title.text
         let mainTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         mainTitle.font = UIFont.preferredFont(forTextStyle: .title1)
-        mainTitle.textColor = UIColor.JmagineColors.Blue.MainBlue
+        mainTitle.textColor = .white
         mainTitle.adjustsFontForContentSizeCategory = true
         mainTitle.layer.shadowColor = UIColor.black.cgColor
         mainTitle.layer.shadowRadius = 3.0
@@ -137,16 +79,15 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         titleView.addSubview(subTitle)
         
         let logoImageView: UIImageView = {
-            
-            let poiImg = UIImageView(frame: CGRect(x: mainTitle.frame.maxX, y: mainTitle.frame.maxY, width: mainTitle.frame.width, height: mainTitle.frame.height))
+            let poiImg = UIImageView(frame: CGRect(x: mainTitle.frame.maxX, y: mainTitle.frame.maxY, width: mainTitle.frame.width, height: 300))
             poiImg.imageFromURL(urlString: (currPoi?.backgroundPic.text)!)
-            poiImg.layer.cornerRadius = poiImg.frame.height/2
             poiImg.clipsToBounds = true
             poiImg.contentMode = .scaleAspectFill
             poiImg.translatesAutoresizingMaskIntoConstraints = false
             poiImg.addSubview(titleView)
             return poiImg
         }()
+        logoImageView.tag = 101
         view.addSubview(logoImageView)
         
         let widthConstraint = NSLayoutConstraint(item: logoImageView, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: self.view.frame.width)
@@ -156,22 +97,34 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         self.view.addConstraints([widthConstraint, heightConstraint])
     }
     func initBody() {
-        let htmlDescription = currPoi?.content.text	;
-        let description = UITextView(frame: CGRect(x:0, y:0, width:350, height:350))
-        //description.text =
-        description.font = UIFont.preferredFont(forTextStyle: .body)
-        description.backgroundColor = .black
-        description.center = self.view.center
-        description.textColor = UIColor.JmagineColors.Gray.MainGray
-        description.layer.shadowColor = UIColor.black.cgColor
-        description.layer.shadowRadius = 3.0
-        description.layer.shadowOpacity = 1.0
-        description.layer.shadowOffset = CGSize(width: 0, height: 0)
-        description.layer.masksToBounds = false
-        description.sizeToFit()
-        //let descView = UIView(frame: CGRect(x:0, y:0, width:description.frame.size.width, height:60))
-        //descView.backgroundColor = .red
-        self.view.addSubview(description)
+        let headerTag:UIView = self.view.viewWithTag(101)!
+        print(headerTag.frame.size.height)
+        let contentContainer = UIView(frame: CGRect(
+            x:0,
+            y:240,
+            width:view.frame.size.width,
+            height:view.frame.size.height - 240
+            )
+        )
+        contentContainer.backgroundColor = .white
+        contentContainer.layer.cornerRadius = 10
+        
+        do {
+            let html = currPoi?.content.text
+            let doc: Document = try SwiftSoup.parse(html ?? "")
+            
+            let webConfiguration = WKWebViewConfiguration()
+            webView = WKWebView(frame: CGRect(x: 10, y: 10, width: contentContainer.frame.size.width - 20, height: contentContainer.frame.size.height - 20), configuration: webConfiguration)
+            webView.uiDelegate = self
+            webView.loadHTMLString(try doc.body()!.text(), baseURL: nil)
+            
+            contentContainer.addSubview(webView)
+            self.view.addSubview(contentContainer)
+        } catch Exception.Error(let type, let message) {
+            print(message)
+        } catch {
+            print("error")
+        }
     }
     
 }

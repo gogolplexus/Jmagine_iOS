@@ -50,10 +50,10 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Gray.MainGray
         case ParcoursState.State.active:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
-            //cellContentFrame.addSubview(toDetailBtn)
+            cellContentFrame.addSubview(toDetailBtn)
         default:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Green.MainGreen
-            //cellContentFrame.addSubview(toDetailBtn)
+            cellContentFrame.addSubview(toDetailBtn)
         }
         
         let cursor = UIImageView(frame: CGRect(x: 10, y: (cellContentFrame.frame.size.height - 30) / 2, width: 30, height: 30))
@@ -137,7 +137,6 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         let directions = MKDirections(request: request)
         directions.calculateETA { (data, err) in
             self.estimatedTime = Int(data?.expectedTravelTime ?? 0)
-            print(Int(self.estimatedTime).description)
             completionHandler(self.estimatedTime)
         }
     }
