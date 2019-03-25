@@ -12,13 +12,16 @@ import SideMenu
 import Alamofire
 import XMLParsing
 import SwiftyXMLParser
+import CoreData
+
 
 class ThemeController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     let themeId = "themeId"
     var themeList = [String: XML.Accessor]()
     var currtheme:XML.Accessor?
-    
+    var container: NSPersistentContainer!
+
     
     let tableView: UITableView = {
         let tv = UITableView()
@@ -127,7 +130,9 @@ class ThemeController: UIViewController, UITableViewDataSource, UITableViewDeleg
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "themeId", for: indexPath) as! ThemeCell
+        let cell:ThemeCell = tableView.dequeueReusableCell(withIdentifier: "themeId", for: indexPath) as! ThemeCell
+        cell.setup()
+        view.addSubview(cell.ThemeView)
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -163,8 +168,7 @@ class ThemeCell: UITableViewCell {
     
     func setup() {
         addSubview(ThemeView)
-        addSubview(descriptionLabel)
-        //ThemeView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingBottom: 4, paddingRight: 8, width: 00, height: 400, enableInsets: true)
+//ThemeView.addSubview(descriptionLabel)        //ThemeView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingBottom: 4, paddingRight: 8, width: 00, height: 400, enableInsets: true)
         ThemeView.layer.cornerRadius = 8
         ThemeView.layer.masksToBounds = true
         ThemeView.layer.shadowColor = UIColor.black.cgColor
