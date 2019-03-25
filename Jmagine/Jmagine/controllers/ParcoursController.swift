@@ -113,6 +113,7 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         modalViewController.modalPresentationStyle = .overCurrentContext
         modalViewController.poiList = poiList
         modalViewController.poiStateTracker = poiStateTracker
+        modalViewController.currentCoordinate = currentCoordinate
         modalViewController.maxLat = self.maxLat
         modalViewController.minLat = self.minLat
         modalViewController.maxLong = self.maxLong
@@ -363,10 +364,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
             // Dispatches to use the data in the main queue
             DispatchQueue.main.async {
                 if (!result.isEmpty) {
-                    print(result[0].parcoursId)
                     self.initFavoris(isInFav:true)
                 } else {
-                    print(result)
                     self.initFavoris(isInFav:false)
                 }
             }
@@ -487,23 +486,35 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         contentView.backgroundColor = .clear
         
         //Defining the content itself
-        let openControlIcon = UIImage(named:"ic_keyboard_arrow_up")?.withRenderingMode(
-            UIImage.RenderingMode.alwaysTemplate)
+        /*let openControlIcon = UIImage(named:"ic_keyboard_arrow_up")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)*/
         
-        let openControlButton = UIButton(frame: CGRect(x: (contentViewWidth - (openControlIcon?.size.width ?? 0)) / 2, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
+        let openControlBar = UIView(frame: CGRect(
+            x: (contentViewWidth - 60) / 2,
+            y: 5,
+            width: 60,
+            height: 5))
+        openControlBar.layer.cornerRadius = 5
+        openControlBar.layer.masksToBounds = true
+        openControlBar.layer.opacity = 0.5
+        openControlBar.backgroundColor = .white
+        contentView.addSubview(openControlBar)
+        
+        /*let openControlButton = UIButton(frame: CGRect(x: (contentViewWidth - (openControlIcon?.size.width ?? 0)) / 2, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
         //openControlButton.addTarget(self, action: #selector(openCtrl), for: .touchUpInside)
         openControlButton.tintColor = .white
         openControlButton.setImage(openControlIcon, for: .normal)
-        contentView.addSubview(openControlButton)
+        contentView.addSubview(openControlButton)*/
         
         let activeCount = poiStateTracker.filter{ $0.value == ParcoursState.State.active || $0.value == ParcoursState.State.completed }.count
         let totalPoi = poiStateTracker.count
         
-        let poiName = UILabel(frame: CGRect(x: 5, y: openControlButton.frame.maxY, width: 0, height: 0))
+        let poiName = UILabel(frame: CGRect(x: 5, y: openControlBar.frame.maxY + 15, width: contentViewWidth - 70, height: 50))
         poiName.font = UIFont.preferredFont(forTextStyle: .headline)
         poiName.adjustsFontForContentSizeCategory = true
         poiName.textColor = .white
         poiName.text = poi + " (\(activeCount) / \(totalPoi))"
+        poiName.numberOfLines = 0
         poiName.sizeToFit()
         contentView.addSubview(poiName)
         

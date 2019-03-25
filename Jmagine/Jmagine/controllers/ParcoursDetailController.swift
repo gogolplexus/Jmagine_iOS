@@ -22,6 +22,8 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
     var minLat:Double = Double(MAXFLOAT)
     var minLong:Double = Double(MAXFLOAT)
     
+    var currentCoordinate: CLLocation?
+    
     var estimatedTime:Int = 0
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -67,8 +69,36 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         title.sizeToFit()
         cellContentFrame.addSubview(title)
         
-        cell.contentView.addSubview(cellContentFrame)
+        let ETA = UILabel(frame: CGRect(
+            x:cursor.frame.maxX + 15,
+            y:5,
+            width:cellContentFrame.frame.size.width - 40,
+            height:10))
+        ETA.font = UIFont.systemFont(ofSize: 9)
+        ETA.adjustsFontForContentSizeCategory = true
+        ETA.tintColor = .black
+        ETA.text = ""
+        ETA.lineBreakMode = .byClipping
+        
+        calculateEstimatedTimeToPOI(poi:Array(poiList.values)[indexPath.row]) { result in
+            ETA.text = "à " + self.parseTime(time: result) + " d'ici"
+            cellContentFrame.addSubview(ETA)
+            cell.contentView.addSubview(cellContentFrame)
+        }
         return cell
+    }
+    
+    func calculateEstimatedTimeToPOI(poi:XML.Accessor, completionHandler: @escaping (_ result: Int) -> ()) {
+        let request = MKDirections.Request()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: currentCoordinate?.coordinate.latitude ?? 0.0, longitude: currentCoordinate?.coordinate.longitude ?? 0.0), addressDictionary: nil))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: poi.lat.double ?? 0.0, longitude: poi.lng.double ?? 0.0), addressDictionary: nil))
+        request.requestsAlternateRoutes = true
+        request.transportType = .walking
+        
+        let directions = MKDirections(request: request)
+        directions.calculateETA { (data, err) in
+            completionHandler(Int(data?.expectedTravelTime ?? 0))
+        }
     }
     
     func initTableView() {
