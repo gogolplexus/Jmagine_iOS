@@ -15,49 +15,45 @@ import SwiftyXMLParser
 
 class ThemeController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    let themeId = "themeId"
+    var themeList = [String: XML.Accessor]()
+    var currtheme:XML.Accessor?
+    
+    
     let tableView: UITableView = {
         let tv = UITableView()
-        tv.separatorStyle = .none
+        tv.separatorStyle = .singleLine
         tv.allowsMultipleSelection = true
         return tv
     }()
     
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "themeId", for: indexPath)
-        return cell
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //getData()
+        setNeedsStatusBarAppearanceUpdate()
+        setupTableView()
+        initNavOptions()
+        setupTableView()
+        let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: NavmenuController())
+        SideMenuManager.default.menuLeftNavigationController = menuLeftNavigationController
+        SideMenuManager.default.menuFadeStatusBar = false
     }
+    
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    let themeId = "themeId"
 
-    var themeList = [String: XML.Accessor]()
-var currtheme:XML.Accessor?
-    
-
-    
     func setupTableView(){
-        
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(ThemeCell.self, forCellReuseIdentifier: themeId)
         view.addSubview(tableView)
+        //tableView.anch
+        tableView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 400, height: 600, enableInsets: false)
+        tableView.register(ThemeCell.self, forCellReuseIdentifier: themeId)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        getData()
-        setNeedsStatusBarAppearanceUpdate()
-        initNavOptions()
-        setupTableView()
-        let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: NavmenuController())
 
-        SideMenuManager.default.menuLeftNavigationController = menuLeftNavigationController
-        
-        SideMenuManager.default.menuFadeStatusBar = false
-    }
     
     @objc func openMenu(sender: UIButton!) {
         present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
@@ -80,8 +76,22 @@ var currtheme:XML.Accessor?
         nextButton.tintColor = .black
         
         navigationItem.leftBarButtonItem = nextButton
+        
+        let doneImage = UIImage(named:"ic_arrow_forward")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        let doneButton = UIBarButtonItem(image: doneImage, style: .plain, target: self, action: #selector(save))
+        navigationItem.rightBarButtonItem = doneButton
     }
     
+    @objc func save() {
+        
+        let navControl = self.navigationController
+        let viewController = HomeController()
+        viewController.modalPresentationCapturesStatusBarAppearance = true
+        navControl?.pushViewController(viewController, animated: true)
+        
+    }
     func getAllThemes(completion : @escaping (_ dataXML:XML.Accessor) -> ()){
         Alamofire.request("http://jmagine.tokidev.fr/api/themes/get_all")
             .responseData { response in
@@ -97,14 +107,11 @@ var currtheme:XML.Accessor?
     func getThemes(data:XML.Accessor) {
         
         for theme in data {
-            
             currtheme = theme
             themeList[theme["name"].text!] = theme
-            
-
         }
-        
     }
+    
     func getData(){
         self.getAllThemes(){ (dataXML) in
             self.getThemes(data: dataXML)
@@ -115,27 +122,26 @@ var currtheme:XML.Accessor?
         return false
     }
     
-    
-  //    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let name = themeList[currtheme!["name"].text!]
-    //     let cell = tableView.dequeueReusableCell(withIdentifier: "themeId", for: indexPath)
-//       cell.textLabel?.text = name
-//        //currtheme?["name"].text!
-//     //   print(currtheme?["name"].text!)
-////print (currtheme?.id.text!)
-    //    cell.layer.borderColor = UIColor.lightGray.cgColor
-    //    cell.layer.borderWidth = 4.0
-      //  cell.layer.masksToBounds = true
-    
-        
-    //    return cell
-   // }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return themeList.count
+        return 8
     }
     
-    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "themeId", for: indexPath) as! ThemeCell
+        return cell
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt themeId: IndexPath) {
+        if self.tableView.cellForRow(at: themeId)?.accessoryType ==  UITableViewCell.AccessoryType.checkmark {
+            
+            self.tableView.cellForRow(at: themeId)?.accessoryType = UITableViewCell.AccessoryType.none
+            	        } else {
+            self.tableView.cellForRow(at: themeId)?.accessoryType = UITableViewCell.AccessoryType.checkmark
+        }
+        
+    }
 }
 
 class ThemeCell: UITableViewCell {
@@ -143,7 +149,6 @@ class ThemeCell: UITableViewCell {
     let ThemeView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
-        
         return view
     }()
     
@@ -153,21 +158,29 @@ class ThemeCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setup()
+    }
+    
+    func setup() {
         addSubview(ThemeView)
         addSubview(descriptionLabel)
+        //ThemeView.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 8, paddingBottom: 4, paddingRight: 8, width: 00, height: 400, enableInsets: true)
         ThemeView.layer.cornerRadius = 8
         ThemeView.layer.masksToBounds = true
         ThemeView.layer.shadowColor = UIColor.black.cgColor
         ThemeView.layer.shadowRadius = 4
         ThemeView.layer.shadowOpacity = 0.23
+        ThemeView.layer.borderColor = UIColor.lightGray.cgColor
+        //cell.layer.borderWidth = 2.0
     }
-        private let descriptionLabel : UILabel = {
+
+       private let descriptionLabel : UILabel = {
             let lbl = UILabel()
             lbl.textColor = .black
             lbl.font = UIFont.systemFont(ofSize: 16)
             lbl.textAlignment = .left
             lbl.numberOfLines = 0
-            lbl.text = "cpucpu"
+            lbl.text = "coucou"
             return lbl
         }()
     
