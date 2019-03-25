@@ -12,14 +12,18 @@ import Alamofire
 import SwiftyXMLParser
 import XMLParsing
 import MapKit
+import CoreData
 
 class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, QRCodeDelegate {
+    var container: NSPersistentContainer!
     
-    var currParcours:Int = 0
+    var currParcours:Int64 = 0
     var currParcoursName:String = ""
+    var currParcoursImg:String = ""
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
     var currPoi:XML.Accessor?
+    var isInFav:Bool?
     
     var instructionsRead:Bool = false
     
@@ -64,6 +68,12 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        guard container != nil else {
+            fatalError("This view needs a persistent container.")
+        }
+        
+        self.renderFavoris()
+        
         // Ask for Authorisation from the User.
         self.locationManager.requestAlwaysAuthorization()
         
@@ -103,6 +113,7 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         modalViewController.modalPresentationStyle = .overCurrentContext
         modalViewController.poiList = poiList
         modalViewController.poiStateTracker = poiStateTracker
+        modalViewController.currentCoordinate = currentCoordinate
         modalViewController.maxLat = self.maxLat
         modalViewController.minLat = self.minLat
         modalViewController.maxLong = self.maxLong
@@ -251,7 +262,7 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         view.addSubview(mapView)
     }
     
-    func getAllPoiFromParcours(idParcours: Int,completion : @escaping (_ dataXML:XML.Accessor) -> ()){
+    func getAllPoiFromParcours(idParcours: Int64,completion : @escaping (_ dataXML:XML.Accessor) -> ()){
         Alamofire.request("http://jmagine.tokidev.fr/api/parcours/\(idParcours)/get_all_pois")
             .responseData { response in
                 if let data = response.data {
@@ -267,17 +278,8 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         let closeImage = UIImage(named:"ic_menu")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let favOffImage = UIImage(named:"ic_favorite_border")?.withRenderingMode(
-            UIImage.RenderingMode.alwaysTemplate)
-        
-        let favOnImage = UIImage(named:"ic_favorite")?.withRenderingMode(
-            UIImage.RenderingMode.alwaysTemplate)
-        
         let closeButton = UIBarButtonItem(image: closeImage, style: .plain, target: self, action: #selector(openMenu))
         closeButton.tintColor = .black
-        
-        let favButton = UIBarButtonItem(image: favOffImage, style: .plain, target: self, action: #selector(openMenu))
-        favButton.tintColor = .black
         
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
         
@@ -287,7 +289,94 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         titleLabel.textColor = .black
         
         navigationItem.leftBarButtonItem = closeButton
+    }
+    
+    func initFavoris(isInFav:Bool){
+        self.isInFav = isInFav
+        var favImage = UIImage(named:"ic_favorite_border")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        if (isInFav) {
+            favImage = UIImage(named:"ic_favorite")?.withRenderingMode(
+                UIImage.RenderingMode.alwaysTemplate)
+        }
+        
+        let favButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(updateFavoris))
+        favButton.tintColor = .black
         navigationItem.rightBarButtonItem = favButton
+    }
+    
+    @objc func updateFavoris() {
+        let managedContext = container.viewContext
+        if(isInFav!) {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Favoris")
+            fetchRequest.predicate = NSPredicate(format: "parcoursId = %d", currParcours)
+            
+            do {
+                let test = try managedContext.fetch(fetchRequest)
+                let favToDelete = test[0] as! NSManagedObject
+                managedContext.delete(favToDelete)
+                do {
+                    try managedContext.save()
+                    var favImage = UIImage(named:"ic_favorite_border")?.withRenderingMode(
+                        UIImage.RenderingMode.alwaysTemplate)
+                    let favButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(updateFavoris))
+                    favButton.tintColor = .black
+                    navigationItem.rightBarButtonItem = favButton
+                } catch let error {
+                    print("NSAsynchronousFetchRequest error: \(error)")
+                }
+            } catch let error {
+                print("NSAsynchronousFetchRequest error: \(error)")
+            }
+        } else {
+            let favorisEntity = NSEntityDescription.entity(forEntityName: "Favoris", in: managedContext)!
+            
+            let favoris = NSManagedObject(entity: favorisEntity, insertInto: managedContext)
+            favoris.setValue(currParcours, forKey: "parcoursId")
+            favoris.setValue(currParcoursName, forKey: "parcoursName")
+            favoris.setValue(currParcoursImg, forKey: "parcoursImg")
+            
+            do {
+                try managedContext.save()
+                let favImage = UIImage(named:"ic_favorite")?.withRenderingMode(
+                    UIImage.RenderingMode.alwaysTemplate)
+                let favButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(updateFavoris))
+                favButton.tintColor = .black
+                navigationItem.rightBarButtonItem = favButton
+            } catch let error {
+                print("NSAsynchronousFetchRequest error: \(error)")
+            }
+        }
+    }
+    
+    func renderFavoris() {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Favoris")
+        fetchRequest.predicate = NSPredicate(format: "parcoursId = %d", currParcours)
+        let privateManagedObjectContext = container.newBackgroundContext()
+        
+        // Creates `asynchronousFetchRequest` with the fetch request and the completion closure
+        let asynchronousFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { asynchronousFetchResult in
+            
+            // Retrieves an array of dogs from the fetch result `finalResult`
+            guard let result = asynchronousFetchResult.finalResult as? [Favoris] else { return }
+            
+            // Dispatches to use the data in the main queue
+            DispatchQueue.main.async {
+                if (!result.isEmpty) {
+                    self.initFavoris(isInFav:true)
+                } else {
+                    self.initFavoris(isInFav:false)
+                }
+            }
+        }
+        
+        do {
+            // Executes `asynchronousFetchRequest`
+            try privateManagedObjectContext.execute(asynchronousFetchRequest)
+        } catch let error {
+            print("NSAsynchronousFetchRequest error: \(error)")
+        }
     }
     
     //Function for appending the polyline to the map
@@ -397,23 +486,35 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         contentView.backgroundColor = .clear
         
         //Defining the content itself
-        let openControlIcon = UIImage(named:"ic_keyboard_arrow_up")?.withRenderingMode(
-            UIImage.RenderingMode.alwaysTemplate)
+        /*let openControlIcon = UIImage(named:"ic_keyboard_arrow_up")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)*/
         
-        let openControlButton = UIButton(frame: CGRect(x: (contentViewWidth - (openControlIcon?.size.width ?? 0)) / 2, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
+        let openControlBar = UIView(frame: CGRect(
+            x: (contentViewWidth - 60) / 2,
+            y: 5,
+            width: 60,
+            height: 5))
+        openControlBar.layer.cornerRadius = 5
+        openControlBar.layer.masksToBounds = true
+        openControlBar.layer.opacity = 0.5
+        openControlBar.backgroundColor = .white
+        contentView.addSubview(openControlBar)
+        
+        /*let openControlButton = UIButton(frame: CGRect(x: (contentViewWidth - (openControlIcon?.size.width ?? 0)) / 2, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
         //openControlButton.addTarget(self, action: #selector(openCtrl), for: .touchUpInside)
         openControlButton.tintColor = .white
         openControlButton.setImage(openControlIcon, for: .normal)
-        contentView.addSubview(openControlButton)
+        contentView.addSubview(openControlButton)*/
         
         let activeCount = poiStateTracker.filter{ $0.value == ParcoursState.State.active || $0.value == ParcoursState.State.completed }.count
         let totalPoi = poiStateTracker.count
         
-        let poiName = UILabel(frame: CGRect(x: 5, y: openControlButton.frame.maxY, width: 0, height: 0))
+        let poiName = UILabel(frame: CGRect(x: 5, y: openControlBar.frame.maxY + 15, width: contentViewWidth - 70, height: 50))
         poiName.font = UIFont.preferredFont(forTextStyle: .headline)
         poiName.adjustsFontForContentSizeCategory = true
         poiName.textColor = .white
         poiName.text = poi + " (\(activeCount) / \(totalPoi))"
+        poiName.numberOfLines = 0
         poiName.sizeToFit()
         contentView.addSubview(poiName)
         

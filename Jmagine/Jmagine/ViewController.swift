@@ -8,6 +8,7 @@
 
 import UIKit
 import SideMenu
+import CoreData
 
 class ViewController: UIViewController, UINavigationControllerDelegate {
 

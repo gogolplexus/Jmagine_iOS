@@ -17,7 +17,10 @@
 		2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205969222AEBF000B6ED94 /* TutoController.swift */; };
 		2938DAE0222336AE00F00B56 /* NavmenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938DADF222336AE00F00B56 /* NavmenuController.swift */; };
 		2970D96C2240CBC9005DF71A /* ParcoursDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2970D96B2240CBC9005DF71A /* ParcoursDetailController.swift */; };
+		297879EC22481E18003F0B7A /* CustomUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297879EB22481E18003F0B7A /* CustomUIButton.swift */; };
 		297B78DE2235441B0008868D /* ParcoursController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297B78DD2235441B0008868D /* ParcoursController.swift */; };
+		299731ED2247CD8100537D99 /* JmagineDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 299731EB2247CD8100537D99 /* JmagineDataModel.xcdatamodeld */; };
+		299731EF2247D2B400537D99 /* PersistentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299731EE2247D2B400537D99 /* PersistentContainer.swift */; };
 		29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD41F4222C0F21000B50BA /* ApiUtils.swift */; };
 		29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B09B762222C7B7005F77C5 /* AppDelegate.swift */; };
 		29B09B792222C7B7005F77C5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B09B782222C7B7005F77C5 /* ViewController.swift */; };
@@ -39,7 +42,10 @@
 		29205969222AEBF000B6ED94 /* TutoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutoController.swift; sourceTree = "<group>"; };
 		2938DADF222336AE00F00B56 /* NavmenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavmenuController.swift; sourceTree = "<group>"; };
 		2970D96B2240CBC9005DF71A /* ParcoursDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursDetailController.swift; sourceTree = "<group>"; };
+		297879EB22481E18003F0B7A /* CustomUIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIButton.swift; sourceTree = "<group>"; };
 		297B78DD2235441B0008868D /* ParcoursController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParcoursController.swift; sourceTree = "<group>"; };
+		299731EC2247CD8100537D99 /* JmagineDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = JmagineDataModel.xcdatamodel; sourceTree = "<group>"; };
+		299731EE2247D2B400537D99 /* PersistentContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentContainer.swift; sourceTree = "<group>"; };
 		29AD41F4222C0F21000B50BA /* ApiUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiUtils.swift; sourceTree = "<group>"; };
 		29B09B732222C7B7005F77C5 /* Jmagine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Jmagine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		29B09B762222C7B7005F77C5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -92,6 +98,8 @@
 				29BA8E742239A751007F556E /* CustomColors.swift */,
 				29EEEFBA223D41D700EF2231 /* CustomUIImageView.swift */,
 				15216B68224441B100C44344 /* Extension.swift */,
+				299731EE2247D2B400537D99 /* PersistentContainer.swift */,
+				297879EB22481E18003F0B7A /* CustomUIButton.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -124,6 +132,7 @@
 				29B09B782222C7B7005F77C5 /* ViewController.swift */,
 				29B09B7D2222C7B8005F77C5 /* Assets.xcassets */,
 				29B09B822222C7B8005F77C5 /* Info.plist */,
+				299731EB2247CD8100537D99 /* JmagineDataModel.xcdatamodeld */,
 				15216B6222440AA200C44344 /* Parcour.swift */,
 				15216B6622443AE200C44344 /* ParcourCell.swift */,
 			);
@@ -232,6 +241,7 @@
 				"${PODS_ROOT}/Target Support Files/Pods-Jmagine/Pods-Jmagine-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftSoup/SwiftSoup.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyXMLParser/SwiftyXMLParser.framework",
 				"${BUILT_PRODUCTS_DIR}/XMLParsing/XMLParsing.framework",
 			);
@@ -241,6 +251,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftSoup.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyXMLParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XMLParsing.framework",
 			);
@@ -286,14 +297,17 @@
 				15216B6722443AE200C44344 /* ParcourCell.swift in Sources */,
 				29EEEFBB223D41D700EF2231 /* CustomUIImageView.swift in Sources */,
 				29BA8E752239A751007F556E /* CustomColors.swift in Sources */,
+				297879EC22481E18003F0B7A /* CustomUIButton.swift in Sources */,
 				29AD41F5222C0F21000B50BA /* ApiUtils.swift in Sources */,
 				15216B69224441B100C44344 /* Extension.swift in Sources */,
 				15216B6322440AA200C44344 /* Parcour.swift in Sources */,
 				29B09B772222C7B7005F77C5 /* AppDelegate.swift in Sources */,
+				299731EF2247D2B400537D99 /* PersistentContainer.swift in Sources */,
 				2920596A222AEBF000B6ED94 /* TutoController.swift in Sources */,
 				29EA95A7223EA3DB00AD2146 /* QRCodeController.swift in Sources */,
 				29205968222AEBC900B6ED94 /* ThemeController.swift in Sources */,
 				297B78DE2235441B0008868D /* ParcoursController.swift in Sources */,
+				299731ED2247CD8100537D99 /* JmagineDataModel.xcdatamodeld in Sources */,
 				15216B612243B64100C44344 /* DetailController.swift in Sources */,
 				2970D96C2240CBC9005DF71A /* ParcoursDetailController.swift in Sources */,
 			);
@@ -478,6 +492,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		299731EB2247CD8100537D99 /* JmagineDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				299731EC2247CD8100537D99 /* JmagineDataModel.xcdatamodel */,
+			);
+			currentVersion = 299731EC2247CD8100537D99 /* JmagineDataModel.xcdatamodel */;
+			path = JmagineDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 29B09B6B2222C7B7005F77C5 /* Project object */;
 }

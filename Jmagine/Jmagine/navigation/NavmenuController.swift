@@ -8,6 +8,7 @@
 
 import UIKit
 import SideMenu
+import CoreData
 
 class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -38,6 +39,8 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         case "Favoris":
             let navControl = self.navigationController
             let viewController = FavorisController()
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            viewController.container = appDelegate.persistentContainer
             viewController.modalPresentationCapturesStatusBarAppearance = true
             navControl?.pushViewController(viewController, animated: true)
             break
@@ -58,6 +61,9 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
             let viewController = ParcoursController()
             viewController.currParcours = 4
             viewController.currParcoursName = "Chemin des artistes et écrivains du vieux Nice"
+            viewController.currParcoursImg = "http://jmagine.tokidev.fr/uploads/img/img1794274583483207166.jpg"
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            viewController.container = appDelegate.persistentContainer
             viewController.modalPresentationCapturesStatusBarAppearance = true
             navControl?.pushViewController(viewController, animated: true)
             break
@@ -68,9 +74,6 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
             navControl?.pushViewController(viewController, animated: true)
             break
         }
-        
-        print("Num: \(indexPath.row)")
-        print("Value: \(myArray[indexPath.row])")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -108,7 +111,7 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         view.backgroundColor = UIColor.JmagineColors.Dark.MainDark
         initNavOptions()
         initHeader()
-        
+                
         // Add the view to the view hierarchy so that it shows up on screen
         let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
         let displayWidth: CGFloat = self.view.frame.width

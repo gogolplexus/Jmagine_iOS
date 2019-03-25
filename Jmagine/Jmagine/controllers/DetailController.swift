@@ -11,7 +11,7 @@ import UIKit
 import SwiftyXMLParser
 import XMLParsing
 import Alamofire
-import SwiftSoup
+//import SwiftSoup
 class DetailController: UIViewController, UINavigationControllerDelegate
 {
     
@@ -24,8 +24,8 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         setNeedsStatusBarAppearanceUpdate()
         initNavOptions()
         getData()
-        
-        
+        //initHeader()
+        //initBody()
         //view.backgroundColor = UIColor.white
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -70,19 +70,46 @@ class DetailController: UIViewController, UINavigationControllerDelegate
         let backImage = UIImage(named:"ic_arrow_back")?.withRenderingMode(
             UIImage.RenderingMode.alwaysTemplate)
         
-        let backButton = UIBarButtonItem(image: backImage, style: .plain, target: self, action: #selector(backAction))
-        backButton.tintColor = .black
+        let backbutton = UIButton(type: .system)
+        backbutton.frame = CGRect(x: 30, y: 50, width: 150, height: 50)
+        backbutton.setTitle("Retour", for: .normal)
+        backbutton.setTitleColor(.white, for: .normal)
+        backbutton.addTarget(self, action: #selector(backAction), for: .touchUpInside)
+        backbutton.titleLabel?.layer.shadowColor = UIColor.black.cgColor
+        backbutton.titleLabel?.layer.shadowRadius = 3.0
+        backbutton.titleLabel?.layer.shadowOpacity = 1.0
+        backbutton.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
+        backbutton.titleLabel?.layer.masksToBounds = false
+        backbutton.sizeToFit()
         
-        let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height))
-        navigationItem.titleView = titleLabel
-        titleLabel.text = "back"
-        titleLabel.textAlignment = .left
-        titleLabel.textColor = .black
-        
-        navigationItem.leftBarButtonItem = backButton
-
+        self.view.addSubview(backbutton)
     }
-
+    
+    @objc func backAction() -> Void {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    // func getImagePoi () -> UIImageView {
+    //let imagePoiUrl = currPoi?.backgroungPic.text
+    
+    /*let logoImageView: UIImageView = {
+     let imageView = UIImageView(image:#imageLiteral(resourceName: "header.jpg"))
+     imageView.contentMode = .scaleAspectFill
+     imageView.clipsToBounds = true
+     imageView.translatesAutoresizingMaskIntoConstraints = false
+     return imageView
+     }()*/
+    
+    
+    /*    if let url = URL(string: (currPoi?.backgroungPic.text)!) {
+     do {
+     let data: Data = try Data(contentsOf: url)
+     logoImageView.image = UIImage(data: data)
+     } catch {
+     }}*/
+    //        return logoImageView
+    //
+    //        }
     func initHeader() {
         //let poiTitle = currPoi?.title.text
         let mainTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))

@@ -1,12 +1,14 @@
 PODS:
   - Alamofire (4.8.1)
   - SideMenu (5.0.3)
+  - SwiftSoup (1.7.4)
   - SwiftyXMLParser (4.3.0)
   - XMLParsing (0.0.3)
 
 DEPENDENCIES:
   - Alamofire (= 4.8.1)
   - SideMenu
+  - SwiftSoup
   - SwiftyXMLParser (from `https://github.com/yahoojapan/SwiftyXMLParser.git`)
   - XMLParsing (from `https://github.com/ShawnMoore/XMLParsing.git`)
 
@@ -14,6 +16,7 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - SideMenu
+    - SwiftSoup
 
 EXTERNAL SOURCES:
   SwiftyXMLParser:
@@ -32,9 +35,10 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
   SideMenu: 1dcaabce84538c53325c287f7fe62999379a641c
+  SwiftSoup: 92f5b348c131aed8af04f4326db1579ab19fa08c
   SwiftyXMLParser: b2e0b0dd0e0fb1ac39869dd4a0c6181847af2945
   XMLParsing: 085edb6fa22c71d6b53a79299f990a91e7414d19
 
-PODFILE CHECKSUM: 716fca0c5dd1b4e0211a3e2f86f28050b3eedb83
+PODFILE CHECKSUM: ff4c23973122fb38a2ee5b8743cdd2a37199b049
 
 COCOAPODS: 1.6.1

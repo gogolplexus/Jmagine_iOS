@@ -15,11 +15,14 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
     
     var poiList = [String: XML.Accessor]()
     var poiStateTracker = [String: ParcoursState.State]()
+    var selectedPoi = ""
     
     var maxLat:Double = -200
     var maxLong:Double = -200
     var minLat:Double = Double(MAXFLOAT)
     var minLong:Double = Double(MAXFLOAT)
+    
+    var currentCoordinate: CLLocation?
     
     var estimatedTime:Int = 0
     
@@ -33,13 +36,24 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         let cellContentFrame = UIView(frame: CGRect(x: 0, y: 0, width: cell.bounds.size.width, height: cell.bounds.size.height))
         cellContentFrame.layer.cornerRadius = 25
         
+        let rightArrow = UIImage(named:"ic_chevron_right")?.withRenderingMode(
+            UIImage.RenderingMode.alwaysTemplate)
+        
+        let toDetailBtn = CustomUIButton(frame: CGRect(x: (cellContentFrame.frame.size.width - 40), y: (cellContentFrame.frame.size.height - 30) / 2, width: 30, height: 30))
+        toDetailBtn.setImage(rightArrow, for: .normal)
+        toDetailBtn.tintColor = .black
+        toDetailBtn.addTarget(self, action: #selector(self.openPOIDetail(_:)), for:.touchUpInside)
+        toDetailBtn.params["poiName"] = Array(poiList.values)[indexPath.row].title.text ?? ""
+        
         switch Array(poiStateTracker.values)[indexPath.row] {
         case ParcoursState.State.inactive:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Gray.MainGray
         case ParcoursState.State.active:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+            //cellContentFrame.addSubview(toDetailBtn)
         default:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Green.MainGreen
+            //cellContentFrame.addSubview(toDetailBtn)
         }
         
         let cursor = UIImageView(frame: CGRect(x: 10, y: (cellContentFrame.frame.size.height - 30) / 2, width: 30, height: 30))
@@ -55,8 +69,36 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
         title.sizeToFit()
         cellContentFrame.addSubview(title)
         
-        cell.contentView.addSubview(cellContentFrame)
+        let ETA = UILabel(frame: CGRect(
+            x:cursor.frame.maxX + 15,
+            y:5,
+            width:cellContentFrame.frame.size.width - 40,
+            height:10))
+        ETA.font = UIFont.systemFont(ofSize: 9)
+        ETA.adjustsFontForContentSizeCategory = true
+        ETA.tintColor = .black
+        ETA.text = ""
+        ETA.lineBreakMode = .byClipping
+        
+        calculateEstimatedTimeToPOI(poi:Array(poiList.values)[indexPath.row]) { result in
+            ETA.text = "à " + self.parseTime(time: result) + " d'ici"
+            cellContentFrame.addSubview(ETA)
+            cell.contentView.addSubview(cellContentFrame)
+        }
         return cell
+    }
+    
+    func calculateEstimatedTimeToPOI(poi:XML.Accessor, completionHandler: @escaping (_ result: Int) -> ()) {
+        let request = MKDirections.Request()
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: currentCoordinate?.coordinate.latitude ?? 0.0, longitude: currentCoordinate?.coordinate.longitude ?? 0.0), addressDictionary: nil))
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: poi.lat.double ?? 0.0, longitude: poi.lng.double ?? 0.0), addressDictionary: nil))
+        request.requestsAlternateRoutes = true
+        request.transportType = .walking
+        
+        let directions = MKDirections(request: request)
+        directions.calculateETA { (data, err) in
+            completionHandler(Int(data?.expectedTravelTime ?? 0))
+        }
     }
     
     func initTableView() {
@@ -111,6 +153,15 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
     
     func closeThisModal() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func openPOIDetail(_ sender: CustomUIButton) {
+        let index:String = sender.params["poiName"] as! String
+        let modalViewController = DetailController()
+        modalViewController.modalPresentationStyle = .overCurrentContext
+        modalViewController.poiList = poiList
+        modalViewController.currPoi = poiList[index]
+        present(modalViewController, animated: true, completion: nil)
     }
     
     @objc func handleCloseModalGesture(gesture: UISwipeGestureRecognizer) -> Void {
