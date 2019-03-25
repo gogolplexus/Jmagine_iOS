@@ -92,14 +92,19 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath as IndexPath)
         
+        let contentView = UIView(frame: CGRect(x: 30, y: 0, width: cell.frame.size.width, height: cell.frame.size.height))
+        
         cell.textLabel!.textColor = .white
         cell.textLabel!.font = UIFont.preferredFont(forTextStyle: .title2)
         cell.textLabel!.adjustsFontForContentSizeCategory = true
         cell.textLabel!.text = "\(myArray[indexPath.row])"
         
+        contentView.addSubview(cell.textLabel!)
+        
         let backgroundView = UIView()
         backgroundView.backgroundColor = .black
         cell.selectedBackgroundView = backgroundView
+        cell.addSubview(contentView)
         
         return cell
     }
@@ -151,7 +156,7 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
     func initHeader() {
         let mainTitle = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         mainTitle.font = UIFont.preferredFont(forTextStyle: .title1)
-        mainTitle.textColor = UIColor.JmagineColors.Blue.MainBlue
+        mainTitle.textColor = .white
         mainTitle.adjustsFontForContentSizeCategory = true
         mainTitle.layer.shadowColor = UIColor.black.cgColor
         mainTitle.layer.shadowRadius = 3.0
@@ -161,22 +166,27 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         mainTitle.text = "Jmagine"
         mainTitle.sizeToFit()
         
-        let subTitle = UILabel(frame: CGRect(x: 0, y: 30, width: 0, height: 0))
+        let subTitle = UILabel(frame: CGRect(x: 0, y: 30, width: self.view.frame.size.width  - 10, height: 50))
         subTitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
-        subTitle.textColor = UIColor.JmagineColors.Gray.MainGray
-        mainTitle.adjustsFontForContentSizeCategory = true
+        subTitle.textColor = UIColor.JmagineColors.Blue.MainBlue
+        subTitle.adjustsFontForContentSizeCategory = true
         subTitle.layer.shadowColor = UIColor.black.cgColor
         subTitle.layer.shadowRadius = 3.0
         subTitle.layer.shadowOpacity = 1.0
         subTitle.layer.shadowOffset = CGSize(width: 0, height: 0)
         subTitle.layer.masksToBounds = false
-        subTitle.text = "Les chemins de la connaissance"
-        subTitle.sizeToFit()
+        subTitle.text = "Chemins invisibles pour l'éducation, la culture et le patrimoine"
+        subTitle.lineBreakMode = .byWordWrapping
+        subTitle.numberOfLines = 0
         
-        let titleView = UIView(frame: CGRect(x:10, y:150, width:max(mainTitle.frame.size.width, subTitle.frame.size.width), height:30))
+        let titleView = UIView(frame: CGRect(x:30, y:130, width:max(mainTitle.frame.size.width, subTitle.frame.size.width), height:0))
         titleView.addSubview(mainTitle)
         titleView.addSubview(subTitle)
         
+        let blueSeparator = UIView(frame: CGRect(x: 0, y: 250 - 5, width: self.view.frame.size.width, height: 5))
+        blueSeparator.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+        
+        self.logoImageView.addSubview(blueSeparator)
         self.logoImageView.addSubview(titleView)
         
         view.addSubview(logoImageView)
