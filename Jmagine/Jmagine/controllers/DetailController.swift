@@ -127,4 +127,8 @@ class DetailController: UIViewController, UINavigationControllerDelegate, WKUIDe
         }
     }
     
+    override open var shouldAutorotate: Bool {
+        return false
+    }
+    
 }

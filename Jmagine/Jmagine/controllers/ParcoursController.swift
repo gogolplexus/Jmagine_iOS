@@ -405,16 +405,13 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
                 // show the alert
                 self.present(alert, animated: true, completion: nil)
             } else if(poiStateTracker[poiTitle] == ParcoursState.State.completed) {
-                //Showing an alert for confirming the poi
-                // create the alert
-                let msg = "Vous avez déjà validé ce POI"
-                let alert = UIAlertController(title: "Attention", message: msg, preferredStyle: UIAlertController.Style.alert)
-                
-                // add the actions (buttons)
-                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
-                
-                // show the alert
-                self.present(alert, animated: true, completion: nil)
+                //Displaying the POI modally
+                let index:String = poiTitle
+                let modalViewController = DetailController()
+                modalViewController.modalPresentationStyle = .overCurrentContext
+                modalViewController.poiList = poiList
+                modalViewController.currPoi = poiList[index]
+                self.present(modalViewController, animated: true, completion: nil)
             } else {
                 //Showing an alert for confirming the poi
                 // create the alert
@@ -485,10 +482,6 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         )
         contentView.backgroundColor = .clear
         
-        //Defining the content itself
-        /*let openControlIcon = UIImage(named:"ic_keyboard_arrow_up")?.withRenderingMode(
-            UIImage.RenderingMode.alwaysTemplate)*/
-        
         let openControlBar = UIView(frame: CGRect(
             x: (contentViewWidth - 60) / 2,
             y: 5,
@@ -499,12 +492,6 @@ class ParcoursController: UIViewController, UINavigationControllerDelegate, MKMa
         openControlBar.layer.opacity = 0.5
         openControlBar.backgroundColor = .white
         contentView.addSubview(openControlBar)
-        
-        /*let openControlButton = UIButton(frame: CGRect(x: (contentViewWidth - (openControlIcon?.size.width ?? 0)) / 2, y: 0, width: openControlIcon?.size.width ?? 0, height: openControlIcon?.size.height ?? 0))
-        //openControlButton.addTarget(self, action: #selector(openCtrl), for: .touchUpInside)
-        openControlButton.tintColor = .white
-        openControlButton.setImage(openControlIcon, for: .normal)
-        contentView.addSubview(openControlButton)*/
         
         let activeCount = poiStateTracker.filter{ $0.value == ParcoursState.State.active || $0.value == ParcoursState.State.completed }.count
         let totalPoi = poiStateTracker.count
