@@ -13,28 +13,49 @@ import Alamofire
 import XMLParsing
 import SwiftyXMLParser
 
-class ThemeController: UITableViewController, UINavigationControllerDelegate {
+class ThemeController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    
+    let tableView: UITableView = {
+        let tv = UITableView()
+        tv.separatorStyle = .none
+        tv.allowsMultipleSelection = true
+        return tv
+    }()
+    
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "themeId", for: indexPath)
+        return cell
+    }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
+    let themeId = "themeId"
+
     var themeList = [String: XML.Accessor]()
+var currtheme:XML.Accessor?
     
+
+    
+    func setupTableView(){
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(ThemeCell.self, forCellReuseIdentifier: themeId)
+        view.addSubview(tableView)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getData()
         setNeedsStatusBarAppearanceUpdate()
         initNavOptions()
-        view.backgroundColor = UIColor.blue
-        // Do any additional setup after loading the view, typically from a nib.
-        
+        setupTableView()
         let menuLeftNavigationController = UISideMenuNavigationController(rootViewController: NavmenuController())
-        // UISideMenuNavigationController is a subclass of UINavigationController, so do any additional configuration
-        // of it here like setting its viewControllers. If you're using storyboards, you'll want to do something like:
-        // let menuLeftNavigationController = storyboard!.instantiateViewController(withIdentifier: "LeftMenuNavigationController") as! UISideMenuNavigationController
+
         SideMenuManager.default.menuLeftNavigationController = menuLeftNavigationController
         
-        // (Optional) Prevent status bar area from turning black when menu appears:
         SideMenuManager.default.menuFadeStatusBar = false
     }
     
@@ -69,14 +90,18 @@ class ThemeController: UITableViewController, UINavigationControllerDelegate {
                     let xml = XML.parse(data)
                     themeData = xml.list.theme
                     completion(themeData)
+                    
                 }
         }
     }
     func getThemes(data:XML.Accessor) {
         
         for theme in data {
-            themeList[theme.title.text!] = theme
-            print(theme)
+            
+            currtheme = theme
+            themeList[theme["name"].text!] = theme
+            
+
         }
         
     }
@@ -91,6 +116,61 @@ class ThemeController: UITableViewController, UINavigationControllerDelegate {
     }
     
     
+  //    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let name = themeList[currtheme!["name"].text!]
+    //     let cell = tableView.dequeueReusableCell(withIdentifier: "themeId", for: indexPath)
+//       cell.textLabel?.text = name
+//        //currtheme?["name"].text!
+//     //   print(currtheme?["name"].text!)
+////print (currtheme?.id.text!)
+    //    cell.layer.borderColor = UIColor.lightGray.cgColor
+    //    cell.layer.borderWidth = 4.0
+      //  cell.layer.masksToBounds = true
+    
+        
+    //    return cell
+   // }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return themeList.count
+    }
+    
     
 }
+
+class ThemeCell: UITableViewCell {
+    
+    let ThemeView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white
+        
+        return view
+    }()
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        addSubview(ThemeView)
+        addSubview(descriptionLabel)
+        ThemeView.layer.cornerRadius = 8
+        ThemeView.layer.masksToBounds = true
+        ThemeView.layer.shadowColor = UIColor.black.cgColor
+        ThemeView.layer.shadowRadius = 4
+        ThemeView.layer.shadowOpacity = 0.23
+    }
+        private let descriptionLabel : UILabel = {
+            let lbl = UILabel()
+            lbl.textColor = .black
+            lbl.font = UIFont.systemFont(ofSize: 16)
+            lbl.textAlignment = .left
+            lbl.numberOfLines = 0
+            lbl.text = "cpucpu"
+            return lbl
+        }()
+    
+}
+    
 
