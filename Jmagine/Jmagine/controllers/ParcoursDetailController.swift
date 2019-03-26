@@ -50,6 +50,7 @@ class ParcoursDetailController: UIViewController, MKMapViewDelegate, UICollectio
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Gray.MainGray
         case ParcoursState.State.active:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Blue.MainBlue
+            cellContentFrame.addSubview(toDetailBtn)
         default:
             cellContentFrame.backgroundColor = UIColor.JmagineColors.Green.MainGreen
             cellContentFrame.addSubview(toDetailBtn)

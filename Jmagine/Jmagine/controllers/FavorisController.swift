@@ -10,7 +10,7 @@ import UIKit
 import SideMenu
 import CoreData
 
-class FavorisController: UIViewController, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
+class FavorisController: UIViewController, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     var collectionView : UICollectionView?
     var container: NSPersistentContainer!
     
@@ -43,6 +43,7 @@ class FavorisController: UIViewController, UINavigationControllerDelegate, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("hello")
         let navControl = self.navigationController
         let parcoursId = self.favoris[indexPath.row].parcoursId
         let viewController = ParcoursController()
@@ -67,64 +68,70 @@ class FavorisController: UIViewController, UINavigationControllerDelegate, UICol
         parcoursPic.imageFromURL(urlString: self.favoris[indexPath.row].parcoursImg ?? "")
         parcoursPic.layer.cornerRadius = parcoursPic.frame.height/2
         parcoursPic.clipsToBounds = true
-        parcoursPic.center.y = cell.center.y
         cellContentFrame.addSubview(parcoursPic)
         
-        let title = UILabel(frame: CGRect(x:(parcoursPic.frame.maxX + 10), y:0, width:cellContentFrame.frame.size.width - 80, height: 40))
+        let title = UILabel(frame: CGRect(
+            x:(parcoursPic.frame.maxX + 10),
+            y:0,
+            width:cellContentFrame.frame.size.width - 80,
+            height: 40))
         title.numberOfLines = 0
         title.font = UIFont.preferredFont(forTextStyle: .body)
         title.adjustsFontForContentSizeCategory = true
         title.text = self.favoris[indexPath.row].parcoursName
         title.tintColor = .black
-        title.center.y = cell.center.y
         title.sizeToFit()
         cellContentFrame.addSubview(title)
         
         let deleteBtn = CustomUIButton(frame: CGRect(
-            x: (title.frame.maxX) + 10,
+            x: (cellContentFrame.frame.size.width) - 30,
             y: 0,
             width: 30,
             height: 30))
         deleteBtn.setImage(deleteIcon, for: .normal)
         deleteBtn.tintColor = .black
-        deleteBtn.center.y = cell.center.y
         deleteBtn.addTarget(self, action: #selector(self.deleteFromFav(_:)), for:.touchUpInside)
         deleteBtn.params["parcoursId"] = self.favoris[indexPath.row].parcoursId
         deleteBtn.params["indexPath"] = indexPath
         
         cellContentFrame.addSubview(deleteBtn)
-        
+        cellContentFrame.clipsToBounds = true
         cell.contentView.addSubview(cellContentFrame)
         return cell
     }
     
     @IBAction func deleteFromFav(_ sender: CustomUIButton) {
-        let index:Int64 = sender.params["parcoursId"] as! Int64
-        let indexPath:IndexPath = sender.params["indexPath"] as! IndexPath
-        let managedContext = container.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Favoris")
-        fetchRequest.predicate = NSPredicate(format: "parcoursId = %d", index)
-        
-        do {
-            let test = try managedContext.fetch(fetchRequest)
-            let favToDelete = test[0] as! NSManagedObject
-            managedContext.delete(favToDelete)
+        DispatchQueue.main.async(execute: {
+            let index:Int64 = sender.params["parcoursId"] as! Int64
+            let indexPath:IndexPath = sender.params["indexPath"] as! IndexPath
+            let managedContext = self.container.viewContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Favoris")
+            fetchRequest.predicate = NSPredicate(format: "parcoursId = %d", index)
+            
             do {
-                try managedContext.save()
-                self.favoris.remove(at: indexPath.row)
-                self.favorisCount -= 1
-                collectionView?.deleteItems(at: [indexPath])
-                
-                if(self.favorisCount == 0){
-                    self.showEmptyMsg()
+                let test = try managedContext.fetch(fetchRequest)
+                let favToDelete = test[0] as! NSManagedObject
+                managedContext.delete(favToDelete)
+                do {
+                    try managedContext.save()
+                    print(indexPath.row)
+                    self.favoris.remove(at: indexPath.row)
+                    self.favorisCount -= 1
+                    self.collectionView?.removeFromSuperview()
+                    self.collectionView?.reloadData()
+                    
+                    if(self.favorisCount == 0){
+                        self.showEmptyMsg()
+                    } else {
+                        self.showFavorites(data: self.favoris)
+                    }
+                } catch let error {
+                    print("NSAsynchronousFetchRequest error: \(error)")
                 }
             } catch let error {
                 print("NSAsynchronousFetchRequest error: \(error)")
             }
-        } catch let error {
-            print("NSAsynchronousFetchRequest error: \(error)")
-        }
-        
+        })
     }
     
     @objc func openMenu(sender: UIButton!) {
@@ -187,10 +194,9 @@ class FavorisController: UIViewController, UINavigationControllerDelegate, UICol
     
     func initTableView() {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
-        layout.itemSize = CGSize(width: self.view.frame.width-50, height: 50)
+        layout.itemSize = CGSize(width: self.view.frame.width-40, height: 50)
         
-        let frame = CGRect(x: 0, y: view.safeAreaInsets.top, width: self.view.frame.size.width, height: self.view.frame.size.height - view.safeAreaInsets.top)
+        let frame = CGRect(x: 0, y: view.safeAreaInsets.top + 20, width: self.view.frame.size.width, height: self.view.frame.size.height - view.safeAreaInsets.top)
         
         self.collectionView = UICollectionView(frame: frame, collectionViewLayout: layout)
         self.collectionView!.dataSource = self

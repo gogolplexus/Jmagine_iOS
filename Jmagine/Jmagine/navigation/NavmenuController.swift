@@ -59,9 +59,17 @@ class NavmenuController: UIViewController, UITableViewDelegate, UITableViewDataS
         case "Test":
             let navControl = self.navigationController
             let viewController = ParcoursController()
+            
+            //Parcours 6
+            //viewController.currParcours = 6
+            //viewController.currParcoursName = "Chemin de Pierre Laffitte à Sophia Antipolis"
+            //viewController.currParcoursImg = "http://jmagine.tokidev.fr/uploads/img/img1290559692733976160.jpg"
+            
+            //Parcours 4
             viewController.currParcours = 4
             viewController.currParcoursName = "Chemin des artistes et écrivains du vieux Nice"
             viewController.currParcoursImg = "http://jmagine.tokidev.fr/uploads/img/img1794274583483207166.jpg"
+            
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             viewController.container = appDelegate.persistentContainer
             viewController.modalPresentationCapturesStatusBarAppearance = true
